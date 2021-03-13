@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Getting Google API C++ Client to work | 127.0.0.1</title>
+<link href="../../assets/css/baguetteBox.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/rst_base.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/code.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/theme.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<link href="../../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="https://0xfe11.github.io/posts/getting-google-api-c%2B%2B-client-to-work/">
+<!--[if lt IE 9]><script src="../../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="0xfe11">
+<link rel="prev" href="../recap-on-2017/" title="Recap on 2017" type="text/html">
+<link rel="next" href="../developing-for-the-web/" title="Developing for the Web" type="text/html">
+<meta property="og:site_name" content="127.0.0.1">
+<meta property="og:title" content="Getting Google API C++ Client to work">
+<meta property="og:url" content="https://0xfe11.github.io/posts/getting-google-api-c%2B%2B-client-to-work/">
+<meta property="og:description" content="Recently, I was given a task to use only C++ and Gmail API to fetch emails, so I decided to go ahead and use the SDK provided by Google. This client api is really dated and if you go onto Google's dev">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2017-12-30T21:13:04+08:00">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+         
+    <header id="header"><h1 id="brand"><a href="https://0xfe11.github.io/" title="127.0.0.1" rel="home">
+
+        <span id="blog-title">127.0.0.1</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../../pages/about/index.html">About</a></li>
+                <li><a href="../../index.html">Blog</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="../getting-google-api-c%2B%2B-client-to-work/" class="u-url">Getting Google API C++ Client to work</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="../getting-google-api-c%2B%2B-client-to-work/" rel="bookmark">
+            <time class="published dt-published" datetime="2017-12-30T21:13:04+08:00" itemprop="datePublished" title="30 Dec 2017">30 Dec 2017</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Recently, I was given a task to use only C++ and Gmail API to fetch emails, so I decided to go ahead and use the SDK provided by Google. This client api is really dated and if you go onto Google's developer documentation, there is not much information about how to use the sdk.</p>
+<p>Getting the sdk to work is really not a walk in the park. There are several problems that I faced when building the library. Firstly, there is not much information on how to use the sdk and luckily there is a calendar sample that demonstrate how to use the api espcially the authentication part of Google which requires the use of OAuth 2.0.</p>
+<p>To start using the Google client api library, we first need to create a <a class="reference external" href="https://console.developers.google.com/">project</a>, next we have to download the secrets that can be used for the application. When I was doing the task, I was stuck on the OAuth part for quite some time. It turns out, I was using the same OAuth store that the Calendar sample was using and thus I could not authenticate my account.</p>
+<p>After I got that to work, I am ready to download some emails from Gmail. I followed the sample given by the calendar sample and tried to use the similar functionality. Initially I tried to use the similar method to download the email, but I got no results. And also, while I was trying to download email, I encountered an issue with undefined symbols. Upon further inspection, I realized that Google api generators for C++ does not generate the proper code for the Gmail api and this result in partial code. Luckily this are easy to fix as the functionality are similar to some of the implemented functionality.</p>
+<p>Fixing that, I thought everything is going smoothly and I tried to download some emails. It is here that I ran into some issues with the client giving me some error. Initially I thought it was my code that was giving me issue. This took some time for me to resolve until I came across this <a class="reference external" href="https://github.com/google/google-api-cpp-client/issues/41">issue</a> which lead me to check the code generated by the api generator. It is there that I realized that the function signature is wrong for the gmail service which takes in StringPiece instead of string and this causes the function to not be overridden properly.</p>
+<p>Fixing this is also quite trivial, just change the function signatures. If anybody is interested in getting it to work, feel free to get the code here on <a class="reference external" href="https://gitlab.com/zgoh/Mail_Fetcher">gitlab</a>.</p>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul class="pager hidden-print">
+<li class="previous">
+                <a href="../recap-on-2017/" rel="prev" title="Recap on 2017">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="../developing-for-the-web/" rel="next" title="Developing for the Web">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><div>
+                <a href="https://github.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-github"></i>
+                </a>
+                <a href="https://gitlab.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-gitlab"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/zihegoh" target="blank">
+                    <i class="fab fa-lg fa-linkedin"></i>
+                </a>
+                <a href="/resume.pdf">
+                    <i class="far fa-lg fa-file-pdf"></i>
+                </a>
+                <a href="mailto:zihe.goh@gmail.com">
+                    <i class="fas fa-lg fa-envelope"></i>
+                </a>
+            </div>
+
+            <div>
+                <p>© 2021         <a href="mailto:zihe.goh@gmail.com">0xfe11</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            </div>
+            
+        </footer>
+</div>
+    
+            <script src="../../assets/js/baguetteBox.min.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

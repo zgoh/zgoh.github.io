@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="My general thoughts on game dev and coding">
+<meta name="viewport" content="width=device-width">
+<title>127.0.0.1 (old posts, page 5) | 127.0.0.1</title>
+<link href="assets/css/baguetteBox.min.css" rel="stylesheet" type="text/css">
+<link href="assets/css/rst_base.css" rel="stylesheet" type="text/css">
+<link href="assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
+<link href="assets/css/code.css" rel="stylesheet" type="text/css">
+<link href="assets/css/theme.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<link href="assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="rss.xml">
+<link rel="canonical" href="https://0xfe11.github.io/index-5.html">
+<link rel="prev" href="." type="text/html">
+<link rel="next" href="index-4.html" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]-->
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+         
+    <header id="header"><h1 id="brand"><a href="https://0xfe11.github.io/" title="127.0.0.1" rel="home">
+
+        <span id="blog-title">127.0.0.1</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="pages/about/index.html">About</a></li>
+                <li><a href="index.html">Blog</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/downloading-free-books-from-packt/" class="u-url">Downloading free books from Packt</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/downloading-free-books-from-packt/" rel="bookmark">
+            <time class="published dt-published" datetime="2020-07-23T10:08:02+08:00" itemprop="datePublished" title="23 Jul 2020">23 Jul 2020</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>Packt have been having this <a class="reference external" href="https://www.packtpub.com/free-learning">Free Learning</a> for a couple of years now. Everyday Packt will release a free ebook to get for 24 hours.
+Personally I have accumulated quite a number of free books that way from them which is stored in their library under my account. I thought it
+would be interesting to download (most of) them to my local libray so that I can put it into my device to read.</p>
+<p>Packt do provide the links to the books that I have downloaded and they have a download button to download the book one by one. I don't
+have the luxury of time to download one by one, hence I decided to automate this process.</p>
+<p>Some disclaimer before I begin, this method is for downloading the books that are released via Free Learning and owned by you. As seen in
+the picture below.</p>
+<img alt="/images/downloading-free-books-from-packt_0.png" src="/images/downloading-free-books-from-packt_0.png">
+<div class="section" id="getting-started">
+<h2>Getting Started</h2>
+<p>Packt actually supports downloading the resource from their server. From this we know that we can find out if there is an embed url in the
+page or find out if it is calling a REST api to get the files. For this, I decided to use the web browser's built
+in network inspector and look at the network tab to see what is happening behind the scenes. I have clicked on the download mobi button and
+from the network tab, there is several calls to the backend. I am only interested in looking the xhr request that the webpage is sending.</p>
+<img alt="/images/downloading-free-books-from-packt_1.png" src="/images/downloading-free-books-from-packt_1.png">
+<p>The API of interest here is the following, we can get all the APIs by clicking on all the download buttons.</p>
+<pre class="code html"><a name="rest_code_8451436a0c654389939d12defbce6cb2-1"></a>[GET] /products-v1/products/1234567890123/files/mobi
+<a name="rest_code_8451436a0c654389939d12defbce6cb2-2"></a>[GET] /products-v1/products/1234567890123/files/epub
+<a name="rest_code_8451436a0c654389939d12defbce6cb2-3"></a>[GET] /products-v1/products/1234567890123/files/pdf
+<a name="rest_code_8451436a0c654389939d12defbce6cb2-4"></a>[GET] /products-v1/products/1234567890123/files/code
+</pre><p>Here we see the 1234567890123 which is our product id, (I have obfuscate the product id for privacy purpose). The product id is a unique string
+of integers which is tagged to a title.</p>
+<p>In the requests to the download API, we can see the usual stuff in a http request header with an additional field named Authorization which
+is a JSON Web Tokens (JWT) used to authenticate ourselves.</p>
+</div>
+<div class="section" id="getting-the-jwt">
+<h2>Getting the JWT</h2>
+<p>Now that we have the APIs to download one individual file, we will need to find a way to get the JWT token. Taking a step back, I went back
+to the login page for Packt and look at the network calls made. I found the following call to generate the token,</p>
+<pre class="code html"><a name="rest_code_fabe2de86b3c40c0bf3b374cd8d2275a-1"></a>[POST] /auth-v1/users/tokens
+<a name="rest_code_fabe2de86b3c40c0bf3b374cd8d2275a-2"></a>{
+<a name="rest_code_fabe2de86b3c40c0bf3b374cd8d2275a-3"></a>  "username": "",
+<a name="rest_code_fabe2de86b3c40c0bf3b374cd8d2275a-4"></a>  "password": ""
+<a name="rest_code_fabe2de86b3c40c0bf3b374cd8d2275a-5"></a>}
+</pre><p>This will give us the Authorization token that we will need for the download APIs.</p>
+</div>
+<div class="section" id="getting-the-list-of-files">
+<h2>Getting the list of files</h2>
+<p>Once again, with my network tab opened, I navigate around the website and I found out that when I clicked on my owned products, there will be
+a REST call to the server to get my owned products. The parameters allow me to fetch up to a certain amount of books.</p>
+<pre class="code html"><a name="rest_code_6416636bea2e45dca7e98e8c0e1a0c7a-1"></a>[GET] /entitlements-v1/users/me/products?sort=createdAt:DESC<span class="err">&amp;</span>offset=0<span class="err">&amp;</span>limit=10
+</pre><p>The result is a json array with the product name, id, metadata etc.</p>
+</div>
+<div class="section" id="testing-the-api-with-insomnia">
+<h2>Testing the API with Insomnia</h2>
+<p>For most of my discovery, I am using the browser's network inspector tool and Insomnia for testing of the REST APIs. Some of the steps for
+testing are,</p>
+<ol class="arabic simple">
+<li><p>Getting our JWT with the tokens API.</p></li>
+<li><p>Getting the list of the books.</p></li>
+<li><p>Using the JWT from 1. we can randomly use a product id from 2. to test any of the download APIs.</p></li>
+</ol>
+<p>Once I am satisfied with this step, I can move on to the next.</p>
+</div>
+<div class="section" id="writing-the-python-script-to-get-em-all">
+<h2>Writing the Python script to get 'em' all</h2>
+<p>Initially I have written the code using requests library, however I realized that downloading file serially is very slow and hence I written
+a second async version to handle bulk downloading. The non-async version supports for downloading individual books while the async version is
+for downloading of all the books. The code is rather buggy, I might improve it in the future if there is a need. The code can be found here on
+<a class="reference external" href="https://github.com/0xfe11/packt_downloader">GitHub</a>.</p>
+</div></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/powerline-in-windows-terminal/" class="u-url">Powerline in Windows Terminal</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/powerline-in-windows-terminal/" rel="bookmark">
+            <time class="published dt-published" datetime="2020-07-22T09:58:02+08:00" itemprop="datePublished" title="22 Jul 2020">22 Jul 2020</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>Few days ago, I came across a git tutorial on <a class="reference external" href="https://www.youtube.com/watch?v=WBg9mlpzEYU">YouTube</a> by Scott Hanselman. I strongly encourage people to take a look even if you are
+proficient enough with git. In his videos, he already did not start right into the git commands but rather he started by introducing the
+powerline tools for Windows so that you can improve your workflow. In the past, I just use the vanilla Windows Terminal with powershell
+however after reading through his <a class="reference external" href="https://www.hanselman.com/blog/HowToMakeAPrettyPromptInWindowsTerminalWithPowerlineNerdFontsCascadiaCodeWSLAndOhmyposh.aspx">blog</a>, I think it is actually quite easy to set it up.</p>
+<p>I will go through the steps to have your own powerline in Windows Terminal as well as some of the customization I did.</p>
+<div class="section" id="getting-windows-terminal">
+<h2>Getting Windows Terminal</h2>
+<p>I just downloaded it from my Microsoft Windows Store so that is will be automatically updated to stable. Feel free to install it anyway you
+like.</p>
+</div>
+<div class="section" id="installing-oh-my-posh">
+<h2>Installing oh-my-posh</h2>
+<p>Following the instructions on the oh-my-posh <a class="reference external" href="https://github.com/JanDeDobbeleer/oh-my-posh">github</a>, do the following command in your Windows Terminal (PowerShell).</p>
+<pre class="code powershell"><a name="rest_code_c09a6947896d48419d0c609faa481b51-1"></a><span class="nb">Install-Module</span> <span class="n">posh-git</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span>
+<a name="rest_code_c09a6947896d48419d0c609faa481b51-2"></a><span class="nb">Install-Module</span> <span class="n">oh-my-posh</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span>
+</pre><p>It will prompt you if you want to trust the third-party and install their software, go ahead and press Y to accept.</p>
+</div>
+<div class="section" id="setting-up-oh-my-posh">
+<h2>Setting up oh-my-posh</h2>
+<p>Next step, we will create a new PowerShell profile (similar to a .bashrc)</p>
+<pre class="code powershell"><a name="rest_code_f91f7ecf14d549759db542785b20079e-1"></a><span class="n">notepad</span> <span class="nv">$PROFILE</span>
+</pre><p>If this is your first time creating the profile, notepad will prompt if you want to create the new file, just go ahead and click yes.</p>
+<p>Add the following lines in your notepad,</p>
+<pre class="code powershell"><a name="rest_code_b46a29af519e49e19beb11d09aa28d76-1"></a><span class="nb">Import-Module</span> <span class="n">posh-git</span>
+<a name="rest_code_b46a29af519e49e19beb11d09aa28d76-2"></a><span class="nb">Import-Module</span> <span class="n">oh-my-posh</span>
+<a name="rest_code_b46a29af519e49e19beb11d09aa28d76-3"></a><span class="nb">Set-Theme</span> <span class="n">Paradox</span>
+</pre><p>Feel free to replace Paradox with any of the following of your choice,
+(Agnoster, Paradox, Sorin, Darkblood, Avit, Robbyrussel, Material, Star, Zash). The list can be found on oh-my-posh <a class="reference external" href="https://github.com/JanDeDobbeleer/oh-my-posh">github</a> page.</p>
+</div>
+<div class="section" id="setting-nerd-fonts">
+<h2>Setting Nerd Fonts</h2>
+<p>Now when you open your Windows Terminal, you might notice some of your fonts are boxes, that is because it will be looking for some of the
+glyphs that will not be included in your standard fonts. Head on over to <a class="reference external" href="https://www.nerdfonts.com/">NERD FONTS</a> and find some fonts that you like. Personally I went
+ahead with <a class="reference external" href="https://www.nerdfonts.com/font-downloads">FiraCode Nerd Font</a>. I went ahead and extracted the whole folder, based on the fonts you like, you might install all of them.
+Do note that some fonts are stated as Windows Compatible and I just went with those. Just right click on the font that you want on your
+file explorer and click on Install.</p>
+<p>After installing the font, open Windows Terminal and then open the settings (click the down arrow -&gt; settings or press Ctrl+,), this will open
+up an editor (Visual Studio for my case) and you can add the following to your settings.json file.</p>
+<pre class="code json"><a name="rest_code_23711a7d81e04ec4b0bcb59afcb4fac8-1"></a><span class="nt">"fontFace"</span><span class="p">:</span> <span class="s2">"FiraCode NF"</span>
+</pre><p>You can either put that inside "profiles": {"defaults": {}} like I did</p>
+<pre class="code json"><a name="rest_code_23c15de7baa3465b89b57aee786c3ca8-1"></a><span class="nt">"profiles"</span><span class="p">:</span> <span class="p">{</span>
+<a name="rest_code_23c15de7baa3465b89b57aee786c3ca8-2"></a>  <span class="nt">"defaults"</span><span class="p">:</span> <span class="p">{</span>
+<a name="rest_code_23c15de7baa3465b89b57aee786c3ca8-3"></a>    <span class="err">//</span> <span class="err">Pu</span><span class="kc">t</span> <span class="err">se</span><span class="kc">tt</span><span class="err">i</span><span class="kc">n</span><span class="err">gs</span> <span class="err">here</span> <span class="kc">t</span><span class="err">ha</span><span class="kc">t</span> <span class="err">you</span> <span class="err">wa</span><span class="kc">nt</span> <span class="kc">t</span><span class="err">o</span> <span class="err">apply</span> <span class="kc">t</span><span class="err">o</span> <span class="err">all</span> <span class="err">pro</span><span class="kc">f</span><span class="err">iles.</span>
+<a name="rest_code_23c15de7baa3465b89b57aee786c3ca8-4"></a>    <span class="nt">"fontFace"</span><span class="p">:</span> <span class="s2">"FiraCode NF"</span>
+<a name="rest_code_23c15de7baa3465b89b57aee786c3ca8-5"></a>  <span class="p">},</span>
+</pre><p>or you can put it in the individual profile</p>
+<pre class="code json"><a name="rest_code_367c8b9120fe4a789871d394933763fe-1"></a><span class="nt">"profiles"</span><span class="p">:</span> <span class="p">{</span>
+<a name="rest_code_367c8b9120fe4a789871d394933763fe-2"></a>    <span class="nt">"defaults"</span><span class="p">:</span> <span class="p">{</span>
+<a name="rest_code_367c8b9120fe4a789871d394933763fe-3"></a>      <span class="err">//</span> <span class="err">Pu</span><span class="kc">t</span> <span class="err">se</span><span class="kc">tt</span><span class="err">i</span><span class="kc">n</span><span class="err">gs</span> <span class="err">here</span> <span class="kc">t</span><span class="err">ha</span><span class="kc">t</span> <span class="err">you</span> <span class="err">wa</span><span class="kc">nt</span> <span class="kc">t</span><span class="err">o</span> <span class="err">apply</span> <span class="kc">t</span><span class="err">o</span> <span class="err">all</span> <span class="err">pro</span><span class="kc">f</span><span class="err">iles.</span>
+<a name="rest_code_367c8b9120fe4a789871d394933763fe-4"></a>    <span class="p">},</span>
+<a name="rest_code_367c8b9120fe4a789871d394933763fe-5"></a>    <span class="nt">"list"</span><span class="p">:</span> <span class="p">[</span>
+<a name="rest_code_367c8b9120fe4a789871d394933763fe-6"></a>      <span class="p">{</span>
+<a name="rest_code_367c8b9120fe4a789871d394933763fe-7"></a>        <span class="err">//</span> <span class="err">Make</span> <span class="err">cha</span><span class="kc">n</span><span class="err">ges</span> <span class="err">here</span> <span class="kc">t</span><span class="err">o</span> <span class="kc">t</span><span class="err">he</span> <span class="err">powershell.exe</span> <span class="err">pro</span><span class="kc">f</span><span class="err">ile.</span>
+<a name="rest_code_367c8b9120fe4a789871d394933763fe-8"></a>        <span class="nt">"guid"</span><span class="p">:</span> <span class="s2">"{61c54bbd-c2c6-5271-96e7-009a87ff44bf}"</span><span class="p">,</span>
+<a name="rest_code_367c8b9120fe4a789871d394933763fe-9"></a>        <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Windows PowerShell"</span><span class="p">,</span>
+<a name="rest_code_367c8b9120fe4a789871d394933763fe-10"></a>        <span class="nt">"commandline"</span><span class="p">:</span> <span class="s2">"powershell.exe"</span><span class="p">,</span>
+<a name="rest_code_367c8b9120fe4a789871d394933763fe-11"></a>        <span class="nt">"hidden"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+<a name="rest_code_367c8b9120fe4a789871d394933763fe-12"></a>        <span class="nt">"fontFace"</span><span class="p">:</span> <span class="s2">"FiraCode NF"</span>
+<a name="rest_code_367c8b9120fe4a789871d394933763fe-13"></a>      <span class="p">},</span>
+</pre><p>and save the file.</p>
+</div>
+<div class="section" id="complete">
+<h2>Complete</h2>
+<p>Now you can open your terminal, this is how my Windows Terminal looks like now.</p>
+<img alt="/images/powerline-in-windows-terminal_0.png" src="/images/powerline-in-windows-terminal_0.png">
+</div></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/web-browser-bloat/" class="u-url">Web browser bloat?</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/web-browser-bloat/" rel="bookmark">
+            <time class="published dt-published" datetime="2020-06-26T23:26:34+08:00" itemprop="datePublished" title="26 Jun 2020">26 Jun 2020</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>Seriously why are web browser using so much memory nowadays, how much ram do I need before my web browser run out of memory to operate. I am
+running Firefox browser v77.0.1 (latest stable). I have in the browser 15 opened tabs, some of them pinned (like my messengers) and memory
+usage is about 1GB?!? On my current machine, I have a 8GB ram initially but I realized after some light web surfing and usage, the memory
+usage climb to about full utilization. Seriously what is my web browser doing?! Ended up I had to upgrade my ram so that I can open more tabs.
+I will try to see if it is something wrong with firefox, maybe it is time for a refresh.</p>
+<p>Or maybe it is time to switch to something else entirely. Seriously I dislike the bloat that is the web. It is filled with javascript that is
+really slow to execute and on top of that, those ads filled piece of malware on most website is really making my computer doing unnecessary work.
+I hope we can use the web without all this bloat. I wish there is something I can do about it.</p>
+<p>End of my rant about bloated web and web browsers.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/from-linux-to-bsds/" class="u-url">From Linux to BSDs</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/from-linux-to-bsds/" rel="bookmark">
+            <time class="published dt-published" datetime="2020-06-20T19:12:59+08:00" itemprop="datePublished" title="20 Jun 2020">20 Jun 2020</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>Last time on the blog, I mentioned that I was trying out Arch Linux distro again. I guess I was
+partially inspired by people who are using tiling managers and also I was looking for something
+lightweight for my old machines. About a week after the blog post, I actually installed Void (again)
+on my machine.</p>
+<p>In fact the reason why I like Void was because it is a new distro that is not based off any
+distribution as well. Personally I dislike the fact that there is a reliance on an upstream. To be
+honest I would have stayed with Void. I really like the fast boot up and I got wifi running, the most
+important thing for my laptop as well as setting up the desktop/browser for my daily usage.</p>
+<p>It was at this point of time I came across a post on Hacker News about installation of FreeBSD on
+a ThinkPad that got me thinking about trying FreeBSD again. For the observant, yes, this is not
+my first installation of FreeBSD, I think I might have attempted to install on my thinkpad in
+fact. It was very long ago. I remember seeing the screenshots of a KDE environment running in the
+distrowatch page and I thought to myself, does it become that after installation. I think I went
+ahead to install but to my disappoinment it was just CLI. Note: At that point of time, I was only
+comfortable with gui installers and graphical interfaces. I didn't really do much on the cli.</p>
+<p>Now that I was more comfortable with a installation of Arch/Void, I decided to give FreeBSD another
+go. The article detailed some of the packages and settings he have done, which are quite useful.</p>
+<p>Right now I have two old and spare computers lying around which I have installed FreeBSD and NetBSD
+on both of them. I also wanted to try OpenBSD however the lack of wifi drivers in the install media
+is not making it easy for me to install, hence I would leave that to another day.</p>
+<p>BSD till next time. Stay tuned as I update my experience with my BSDs.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/my-new-arch-set-up/" class="u-url">My new Arch set-up</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/my-new-arch-set-up/" rel="bookmark">
+            <time class="published dt-published" datetime="2020-05-07T19:54:56+08:00" itemprop="datePublished" title="07 May 2020">07 May 2020</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>This post is about my new Arch set-up on my old Lenovo laptop. Okay this is not exactly a new Arch set-up because I
+have installed Arch once before many years ago. I was interested in a Linux installation where it is just barebones
+enough for me to get it up and running without having to deal with building from source or missing drivers.</p>
+<p>I have also been using Manjaro on and off for some time. I really like the distro very much and it is based off Arch
+as well. Prior to this build, I was playing around with AntiX. I think it is quite user friendly however I think I
+prefer rolling release for my Linux and I really like Arch as a distro.</p>
+<p>So what's new in this build, you might ask? Like I mentioned, I have used Linux on and off for the past many years but
+somehow, it didn't really stick to me. I feel like there is too much customization and tweaks that can be done. All these
+makes my learning slope a bit steeper. On and off, I have been trying tiling managers, editors and nothing sticks until
+this build.</p>
+<p>Anyways I have put together a useable stack that I deem worthy to work in and I would like to share what it is. There are
+various Youtube channels that I follow that discuss these ideas and it is these ideas that set me forth on my journey
+to build something I would enjoy working in.</p>
+<p>Firstly, the hardware is a (very old) Lenovo Thinkpad from 2009. I am really impressed with Lenovo, good job there. I
+install the latest Arch Linux from USB drive. I had to reboot the distro from my USB a few times because I didn't
+install some of the driver for my WiFi card. Luckily this was as easy as booting off the USB and chrooting into my
+machine and installing those packages all thanks to an Arch install guide I <a class="reference external" href="https://itsfoss.com/install-arch-linux/">found</a>.</p>
+<p>After the WiFi packages got installed, the next thing to do was to set up a desktop environment for my usage. I wanted
+to give myself another shot at a tiling manager. There are people who are against the idea of a tiling manager and
+people who like the idea. Personally I think choosing the right tool for the job is more important. I would like to
+give tiling manager another go. Before I set up the tiling manager, I would need to install Xorg and set it up.</p>
+<p>I make a copy of the .xinitrc file and added some configuration of my own, namely using xrandr to turn off my primary
+monitor, as it is busted and I am using an external monitor. After that I added the lines to run the respective tiling
+manager.</p>
+<p>On my list right now, I have a few that I want to try. I installed all of them and I give them a go. The following are
+the ones I have tried, Awesome, dwm, herbstluftwm, i3, spectrwm (somehow crashed upon run). I really like dwm as
+the config seems to be easiest. Awesome's configuration seems to be very flexible as it is lua based.</p>
+<p>Interestingly I went with <a class="reference external" href="https://herbstluftwm.org/">herbstluftwm</a>. Honestly I have not heard of this manager and initially it was not as good.
+In fact, I feel that the whole usage is very intuitive.</p>
+<p>On top of that I have installed the following,</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://fishshell.com/">fish</a> - Shell</p></li>
+<li><p><a class="reference external" href="https://github.com/naelstrof/maim">maim</a> - Taking screenshot</p></li>
+<li><p><a class="reference external" href="https://neovim.io/">Neovim</a> - Editing</p></li>
+<li><p><a class="reference external" href="https://qutebrowser.org/">Qutebrowser</a> - Web browser</p></li>
+<li><p>(suckless) <a class="reference external" href="https://st.suckless.org/">Simple Terminal</a> - Terminal Emulator</p></li>
+</ul>
+<p>for my daily usage. I will add on more stuff as I need.</p>
+<p>As for managing my dot files, I found a few solutions online. In the end, I went with the GNU Stow approach to managing
+my dotfiles. It is actually very simple to set-up. The article to set-up can be found <a class="reference external" href="https://alexpearce.me/2016/02/managing-dotfiles-with-stow/">here</a>.</p>
+<p>Showing off my current build.</p>
+<img alt="/images/my-new-arch-set-up_0.png" src="/images/my-new-arch-set-up_0.png">
+<p>Happy hacking !!!</p></div>
+    </div>
+    --></article>
+</div>
+
+        <nav class="postindexpager"><ul class="pager">
+<li class="previous">
+                <a href="." rel="prev">Newer posts</a>
+            </li>
+            <li class="next">
+                <a href="index-4.html" rel="next">Older posts</a>
+            </li>
+        </ul></nav></main><footer id="footer"><div>
+                <a href="https://github.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-github"></i>
+                </a>
+                <a href="https://gitlab.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-gitlab"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/zihegoh" target="blank">
+                    <i class="fab fa-lg fa-linkedin"></i>
+                </a>
+                <a href="/resume.pdf">
+                    <i class="far fa-lg fa-file-pdf"></i>
+                </a>
+                <a href="mailto:zihe.goh@gmail.com">
+                    <i class="fas fa-lg fa-envelope"></i>
+                </a>
+            </div>
+
+            <div>
+                <p>© 2021         <a href="mailto:zihe.goh@gmail.com">0xfe11</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            </div>
+            
+        </footer>
+</div>
+    
+            <script src="assets/js/baguetteBox.min.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

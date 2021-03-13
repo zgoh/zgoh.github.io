@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>How Roll Engine was made? | 127.0.0.1</title>
+<link href="../../assets/css/baguetteBox.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/rst_base.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/code.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/theme.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<link href="../../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="https://0xfe11.github.io/posts/how-roll-engine-was-made/">
+<!--[if lt IE 9]><script src="../../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="0xfe11">
+<link rel="prev" href="../thinking-about-data-oriented-design/" title="Thinking about data oriented design" type="text/html">
+<link rel="next" href="../live-textures-reloading/" title="Live Textures Reloading" type="text/html">
+<meta property="og:site_name" content="127.0.0.1">
+<meta property="og:title" content="How Roll Engine was made?">
+<meta property="og:url" content="https://0xfe11.github.io/posts/how-roll-engine-was-made/">
+<meta property="og:description" content="Hey everyone, today I am going to talk about how our game engine aka Roll Engine, (RE for short) is made. and I am going to share about some of the technical problems I have faced when programming a g">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-03-25T05:27:00+08:00">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+         
+    <header id="header"><h1 id="brand"><a href="https://0xfe11.github.io/" title="127.0.0.1" rel="home">
+
+        <span id="blog-title">127.0.0.1</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../../pages/about/index.html">About</a></li>
+                <li><a href="../../index.html">Blog</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">How Roll Engine was made?</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="." rel="bookmark">
+            <time class="published dt-published" datetime="2016-03-25T05:27:00+08:00" itemprop="datePublished" title="25 Mar 2016">25 Mar 2016</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Hey everyone, today I am going to talk about how our game engine aka Roll Engine, (RE for short) is made. and I am going to share about some of the technical problems I have faced when programming a game engine from scratch. Although this is not a commercial engine, I wanted to share some errors that I made and give you tips and how to make a better engine (hopefully) in the future.</p>
+<p>I will share about my background experiences in game engine building before I delve into talking about RE.</p>
+<p>The first time I learned about engines is from flash, mainly <a class="reference external" href="http://useflashpunk.net/">FlashPunk</a>, then I moved on to learn <a class="reference external" href="https://haxe.org/">Haxe</a> and (sort of) develop my own engine, <a class="reference external" href="https://github.com/zine92/ZE2D">ZE2D</a> for making simple 2D games. From then on, I learned about main game loops and the different types of main game loops, I recommend reading Koen Witters's blog post about main <a class="reference external" href="https://www.koonsolo.com/news/dewitters-gameloop/">game loop</a>. It wasn't until when I started to develop my own game engine from scratch (in c++) that I had to find out how to write a proper game loop.</p>
+<p>Before I started writing my own game engine from scratch, I had worked on 2 games that require me to code in C++, that was my first exposure to writing games in C++. The first project, I worked on the game play logic mostly and in the second project, we were given a graphics engine and I worked on getting up a working structure for the game engine. Here I learned how a simple engine can be constructed with the handling of game state and entities.</p>
+<p>After the first two projects, we had to build our own game engine which I named it RE. Before I started to build RE, I looked around for resources on how to make games with C++ and I managed to stumble onto this wonder video series, <a class="reference external" href="https://handmadehero.org/">Handmade Hero</a> by <a class="reference external" href="https://mollyrocket.com/casey/about.html">Casey Muratori</a>. At that point of time, he just started the series and I tried to follow his series especially the beginning where he demonstrated how to build the initial systems for the game. That is how I got into the world of Win32 programming and I started to do my own side project. The project that I did was having a simple WinMain function and a very simple game loop along with simple input using RawInput, on top of that I tried to do a simple editor like window for the application. The result was a windowed application with a toolbar and basic input and simple DirectX rendering (without sprites yet).</p>
+<p>This led me to my second attempt at building a game engine from scratch again, this time round, I tried using the <a class="reference external" href="https://wxwidgets.org/">wxWidgets</a> because I have seen a senior team using it for their game project and so I wanted to do the same thing as well. This second attempt is mostly about getting wxWidgets to work on top of the base that I had previously built. WxWidgets is quite troublesome to set up because of the large source files and I couldn't find a proper way to build the code from scratch initially, but I managed to dig through the readme files and found a way to get it to build. That roughly marks the start of how RE was born.</p>
+<p>So far, the major problems I face was incorporating an editor into the engine, building the core systems for the engine and how to incorporate the logic components into the game engine and which graphics rendering api to adopt.</p>
+<p>Note: The decisions that I made here is only valid to me and my team. Whatever I said here might be bias or incorrect but it works for my team, so do take into considerations when making a sound decision.</p>
+<p>The decisions I made was to stick with wxWidgets rather than the Win32 api or Qt (or the 101 windows toolkit out there) because I had tried to use wx earlier and I seen how powerful the editor that my seniors have made. The second decision that I made to the team was to use Direct X 11, similarly this was also the decision that my senior had made and some seniors told us that DirectX is easier to use than OpenGL.</p>
+<p>A few weeks into development and I had got the editor to work partially with the necessary windows however there is one burning question that I always asked myself, how do I do reflection/serialization with my game objects? I went on to the internet and I tried to follow a few tutorials and pages but I didn't find much useful article except for one by <a class="reference external" href="http://www.randygaul.net/2012/10/01/c-reflection-type-metadata-introduction">Randy Gaul</a>, his article on metadata reflection and serialization. I tried to use his codes as a base to build my own solutions but I ended up not using it because mine was quite complicated to use. End up, I decided to rewrite my reflection system and use the visitor pattern to implement a simpler version of a <a class="reference external" href="http://gamedev.stackexchange.com/questions/76257/c-property-system-interface-for-game-editors-reflection-system">reflection system</a> by <a class="reference external" href="http://gamedev.stackexchange.com/users/7697/sean-middleditch">Sean Middleditch</a>.</p>
+<p>Meanwhile, I am still getting the editor up and running, there are a few teams which are interested in building an external editor like me, they also started Qt/wx. However as I progressed, I realized that building the external editor is going to take up lots of my development time because I have still been struggling to build the basic game engine structure, so the next technical decision that I made was to throw away the external editor and turn towards an in game editor solution. There are two libraries that I know of that can do this, the first one being <a class="reference external" href="https://github.com/ocornut/imgui">dear imgui</a>, and the second one was <a class="reference external" href="http://anttweakbar.sourceforge.net">AntTweakBar</a>. I have briefly looked at the imgui's (Immediate mode GUI) way of displaying UI and I took a liking to how easy it was to display UI, though I think AntTweakBar might do the same, I did not look at the sample code, so I went along with dear imgui.</p>
+<p>Throwing the external editor out, I now focus on building the in game editor for the game engine while my team build the physics, graphics, logic systems. Here, my team member proposed to me about having handles for game objects so that we will not be dealing with the pointers and I agreed. I have seen that handles can be useful from this article by <a class="reference external" href="http://gamesfromwithin.com/managing-data-relationships">Noel Llopis</a>. Most of the object creation are done by one of my team mates while I focused on building the reflection/serialization systems.</p>
+<p>In every engine, there is always a need for message passing and there are a few ways that we can do it. I did not want the tean to implement a complicated solution and end up not using it, so I made a clear decision here that our messaging system will be simple bubbling up messaging where all the systems will broadcast to the core (root) and then broadcast downwards to all systems again. This kind of messaging works for most of our use cases where we have things like window resizing and moving and we need to notify the graphics system that this is happening. We do not use this for our logic components.</p>
+<p>Components is also another thing that was on my mind constantly when I started to build our engine, because I do not know how to store all this components and if so, how do these components interact with one another. The choice that I made was to have different systems for each type of components, e.g. transform systems will have an array of transform components and is responsible of managing them. So I have a graphics, transform, physics, collision and logic system with their own components. The logic system is a little special because it holds different subsystems or factories for different logic 'scripts' which are just .cpp files and then manages them.</p>
+<p>Back to the editor, it is just an object with all the functionality inside, so the editor sits on top of the scene management system and can be removed from the engine without affecting the game engine at all.</p>
+<p>Basically that's most of the things that we have done for RE. Be sure to keep a lookout for the game Basket Brawl. That's the name of the game that we are developing at DigiPen. Stay tuned for more "How I Make Games"!</p>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul class="pager hidden-print">
+<li class="previous">
+                <a href="../thinking-about-data-oriented-design/" rel="prev" title="Thinking about data oriented design">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="../live-textures-reloading/" rel="next" title="Live Textures Reloading">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><div>
+                <a href="https://github.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-github"></i>
+                </a>
+                <a href="https://gitlab.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-gitlab"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/zihegoh" target="blank">
+                    <i class="fab fa-lg fa-linkedin"></i>
+                </a>
+                <a href="/resume.pdf">
+                    <i class="far fa-lg fa-file-pdf"></i>
+                </a>
+                <a href="mailto:zihe.goh@gmail.com">
+                    <i class="fas fa-lg fa-envelope"></i>
+                </a>
+            </div>
+
+            <div>
+                <p>© 2021         <a href="mailto:zihe.goh@gmail.com">0xfe11</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            </div>
+            
+        </footer>
+</div>
+    
+            <script src="../../assets/js/baguetteBox.min.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

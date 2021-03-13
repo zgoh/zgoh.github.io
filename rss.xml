@@ -1,0 +1,900 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>127.0.0.1</title><link>https://0xfe11.github.io/</link><description>My general thoughts on game dev and coding</description><atom:link href="https://0xfe11.github.io/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:zihe.goh@gmail.com"&gt;0xfe11&lt;/a&gt; </copyright><lastBuildDate>Sat, 13 Mar 2021 08:12:52 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Installing Kali Linux on FreeBSD bhyve</title><link>https://0xfe11.github.io/posts/installing-kali-linux-on-freebsd-bhyve/</link><dc:creator>0xfe11</dc:creator><description>&lt;div&gt;&lt;p&gt;Currently I wanted to learn some penetration testing and I have heard a fair bit about FreeBSD's hypervisor bhyve and I thought why not
+install one Kali/Parrot on my FreeBSD machine. Bhyve is a a FreeBSD hypervisor built into the base of FreeBSD. One can set up the vm using
+just bhyve and the FreeBSD handbook, but I decided to use the tool vm-bhyve to help me with the task. After much tinkering, this is the steps
+that I have collected to deploy a Kali on my machine. Note: I have issues with booting Parrot OS somehow. I just got a blinking cursor which
+I could not got through. I will need to take a look another time. For now this are the steps that I have done.&lt;/p&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-1"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Install grub2-bhyve for linux grub bootloader&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-2"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# vm-bhyve is wrapper for bhyve&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-3"&gt;&lt;/a&gt;doas pkg install vm-bhyve grub2-bhyve
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-4"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-5"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Install any vnc client you like, for me I am using tigervnc&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-6"&gt;&lt;/a&gt;doas pkg install tigervnc
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-7"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-8"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Load kernel virtualization module&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-9"&gt;&lt;/a&gt;doas kldload if_bridge if_tap nmdm vmm
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-10"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-11"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Make loading of kernel modules persistent&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-12"&gt;&lt;/a&gt;doas &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;'if_bridge_load="YES"'&lt;/span&gt; &amp;gt;&amp;gt; /boot/loader.conf
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-13"&gt;&lt;/a&gt;doas &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;'if_tap_load="YES"'&lt;/span&gt; &amp;gt;&amp;gt; /boot/loader.conf
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-14"&gt;&lt;/a&gt;doas &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;'nmdm_load="YES"'&lt;/span&gt; &amp;gt;&amp;gt; /boot/loader.conf
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-15"&gt;&lt;/a&gt;doas &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;'vmm_load="YES"'&lt;/span&gt; &amp;gt;&amp;gt; /boot/loader.conf
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-16"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-17"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Set configuration for byhve-vm&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-18"&gt;&lt;/a&gt;doas sysrc &lt;span class="nv"&gt;vm_enable&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"YES"&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-19"&gt;&lt;/a&gt;doas sysrc &lt;span class="nv"&gt;vm_dir&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"zfs:zroot/vms"&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-20"&gt;&lt;/a&gt;doas sysrc &lt;span class="nv"&gt;vm_delay&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"5"&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-21"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-22"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Edit our pf rules&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-23"&gt;&lt;/a&gt;doas vi /etc/pf.conf
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-24"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-25"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Add the following, taken from https://aliov.org/index.php/2020/03/22/bhyve-nat-vm-setup/&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-26"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Note: IPs are taken from reference of https://github.com/churchers/vm-bhyve/wiki/NAT-Configuration&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-27"&gt;&lt;/a&gt;nat on wlan0 from &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="m"&gt;192&lt;/span&gt;.168.8.0/24&lt;span class="o"&gt;}&lt;/span&gt; to any -&amp;gt; &lt;span class="o"&gt;(&lt;/span&gt;wlan0&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-28"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-29"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Enable ip forwarding&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-30"&gt;&lt;/a&gt;doas sysctl net.inet.ip.forwarding&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-31"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-32"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Set configuration for NAT (network for our guest)&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-33"&gt;&lt;/a&gt;&lt;span class="nv"&gt;gateway_enable&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"yes"&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-34"&gt;&lt;/a&gt;&lt;span class="nv"&gt;pf_enable&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"yes"&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-35"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-36"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Start PF if not started&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-37"&gt;&lt;/a&gt;doas service pf start
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-38"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-39"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Otherwise restart&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-40"&gt;&lt;/a&gt;doas service pf restart
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-41"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-42"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Create filesystem for VMs, all the vms will live inside, managed by vm-bhyve (settings above)&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-43"&gt;&lt;/a&gt;doas zfs create -o &lt;span class="nv"&gt;mountpoint&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/vms zroot/vms
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-44"&gt;&lt;/a&gt;doas vm init
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-45"&gt;&lt;/a&gt;doas cp /usr/local/share/examples/vm-bhyve/* /vms/.templates/
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-46"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-47"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Create bridge device, as I am using wifi, I set it to wlan0&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-48"&gt;&lt;/a&gt;doas vm switch create -a &lt;span class="m"&gt;192&lt;/span&gt;.168.8.1/24 public
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-49"&gt;&lt;/a&gt;doas vm switch add public wlan0
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-50"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-51"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# To see switch info&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-52"&gt;&lt;/a&gt;doas vm switch info
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-53"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-54"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# To see all switches&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-55"&gt;&lt;/a&gt;doas vm switch list
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-56"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-57"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Grab Kali from the net (Note: source could be local filesystem) will be downloaded to /vms/.iso&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-58"&gt;&lt;/a&gt;doas vm iso https://cdimage.kali.org/kali-2021.1/kali-linux-2021.1-installer-amd64.iso
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-59"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-60"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Create the VM (-t stands for template and -s is the size of the vm)&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-61"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# More templates can be found at /vms/.templates&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-62"&gt;&lt;/a&gt;doas vm create -t debian -s 20G mykali
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-63"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-64"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Configure things like memory, cpu, uefi, vnc settings&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-65"&gt;&lt;/a&gt;doas vm configure mykali
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-66"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-67"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# This are the things I added, refer to https://github.com/churchers/vm-bhyve/wiki/UEFI-Graphics-(VNC)&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-68"&gt;&lt;/a&gt;&lt;span class="nv"&gt;cpu&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-69"&gt;&lt;/a&gt;&lt;span class="nv"&gt;memory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;4G
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-70"&gt;&lt;/a&gt;&lt;span class="nv"&gt;uefi&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"yes"&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-71"&gt;&lt;/a&gt;&lt;span class="nv"&gt;graphics&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"yes"&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-72"&gt;&lt;/a&gt;&lt;span class="nv"&gt;graphics_res&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"1600x1200"&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-73"&gt;&lt;/a&gt;&lt;span class="nv"&gt;xhci_mouse&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"yes"&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-74"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-75"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# To check the iso name in the iso store&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-76"&gt;&lt;/a&gt;doas vm iso
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-77"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-78"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# In this case kali-linux-2021.1-installer-amd64.iso is the iso I want&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-79"&gt;&lt;/a&gt;DATASTORE           FILENAME
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-80"&gt;&lt;/a&gt;default             kali-linux-2021.1-installer-amd64.iso
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-81"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-82"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Start installation from the ISO, this step will boot the vm with the iso&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-83"&gt;&lt;/a&gt;doas vm install mykali  kali-linux-2021.1-installer-amd64.iso
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-84"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-85"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Since I am intending to use with TigerVNC, I put in 127.0.0.1:5900 (default vnc port) for the host&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-86"&gt;&lt;/a&gt;vncviewer &lt;span class="m"&gt;127&lt;/span&gt;.0.0.1:5900
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-87"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-88"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Due to the uefi folder not in BOOT, it will not boot properly hence what I did was use the expert install menu&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-89"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# and when prompted about installing grub to my removable drive, I click yes and it will show a installing to dummy grub&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-90"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Otherwise if you miss this, you can still remediate&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-91"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-92"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# After install, you can always configure again if you need to add resource whatsoever&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-93"&gt;&lt;/a&gt;doas vm configure mykali
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-94"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-95"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Enable autostart of the newly created VM, if you want&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-96"&gt;&lt;/a&gt;doas sysrc &lt;span class="nv"&gt;vm_list&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"mykali"&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-97"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-98"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Otherwise you can manually start with&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-99"&gt;&lt;/a&gt;doas vm start mykali
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-100"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-101"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# If you have not done the installing grub fix, you might be faced with an boot failed efi cdrom/dvd message.&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-102"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Wait a while for a shell to appear, type exit the quit the shell and you should see a bhyve boot menu&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-103"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# go to Boot Maintainence Manager &amp;gt; Boot From File &amp;gt; YOUR_BOOT_LABEL&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-104"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# You should see an EFI entry inside, go ahead into kali and select the grubx64.efi, your OS should not show the&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-105"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# bootloader&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-106"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-107"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Once inside, do the following to fix the grub issue, Note: this have to be done everytime grub updates&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-108"&gt;&lt;/a&gt;sudo su
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-109"&gt;&lt;/a&gt;mkdir /boot/efi/EFI/BOOT/
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-110"&gt;&lt;/a&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /boot/efi/EFI/kali
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-111"&gt;&lt;/a&gt;cp grubx64.efi /boot/efi/EFI/BOOT/bootx64.efi
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-112"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-113"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Reboot the machine to see the change&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-114"&gt;&lt;/a&gt;reboot
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-115"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-116"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# To stop the vm and power down if there is any issue, other can just power off from the guest&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-117"&gt;&lt;/a&gt;doas vm stop mykali
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-118"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-119"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# To see list of all vms and it's state&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-120"&gt;&lt;/a&gt;doas vm list
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-121"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-122"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# To set up internet in the kali, right click on the network connection icon on the top bar and click edit connection&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-123"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Go to the ipv4 settings and set the machine ip to be 192.168.8.2/24 and the gateway to be 192.168.8.1&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-124"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Set the DNS to 8.8.8.8 (Google DNS)&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-125"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Try to ping the following and make sure it is not timed out&lt;/span&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-126"&gt;&lt;/a&gt;ping -c &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="m"&gt;192&lt;/span&gt;.168.8.1
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-127"&gt;&lt;/a&gt;ping -c &lt;span class="m"&gt;2&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;.8.8.8
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-128"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e2de4428efd84bdb9c19a892da704595-129"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# If all else succeed, you will have Kali Linux running on your FreeBSD laptop with internet access.&lt;/span&gt;
+&lt;/pre&gt;&lt;dl class="simple"&gt;
+&lt;dt&gt;All thanks to (for troubleshooting and guides):&lt;/dt&gt;
+&lt;dd&gt;&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://www.davd.io/install-ubuntu-on-freebsd-with-bhyve/"&gt;Install Ubuntu on FreeBSD with byhve (Update Ubuntu 18.04)&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://www.cyberciti.biz/faq/how-to-install-linux-vm-on-freebsd-using-bhyve-and-zfs/"&gt;How to install Linux VM on FreeBSD using bhyve and ZFS&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://github.com/churchers/vm-bhyve/wiki/UEFI-Graphics-(VNC)"&gt;UEFI Graphics (VNC) vm-bhyve wiki&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://github.com/churchers/vm-bhyve/wiki/NAT-Configuration"&gt;Nat configuration vm-bhhyve wiki&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://blog.tkrn.io/freenas-11-boot-failed-efi-misc-device-fix-debian/"&gt;FreeNAS 11 “Boot Failed. EFI Misc Device” Fix (Debian)&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://www.jongibbins.com/solving-uefi-boot-problems-on-bhyve-freenas-vm/"&gt;Solving UEFI Boot Problems on Bhyve / FreeNAS VM&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://aliov.org/index.php/2020/03/22/bhyve-nat-vm-setup/"&gt;bhyve wireless NAT vm setup&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;&lt;/div&gt;</description><guid>https://0xfe11.github.io/posts/installing-kali-linux-on-freebsd-bhyve/</guid><pubDate>Sat, 13 Mar 2021 06:18:50 GMT</pubDate></item><item><title>Deploying Dash application to Heroku (for FreeBSD)</title><link>https://0xfe11.github.io/posts/deploying-dash-application-to-heroku-for-freebsd/</link><dc:creator>0xfe11</dc:creator><description>&lt;div&gt;&lt;p&gt;Before you begin, ensure that you have the following prerequisite before you begin,&lt;/p&gt;
+&lt;div class="section" id="prerequisite"&gt;
+&lt;h2&gt;Prerequisite&lt;/h2&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://www.heroku.com/"&gt;Heroku&lt;/a&gt; account&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;git&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;python and virtualenv&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div class="section" id="creating-project-from-scratch"&gt;
+&lt;h2&gt;Creating project from scratch&lt;/h2&gt;
+&lt;div class="section" id="step-1-create-a-new-folder-for-your-new-dash-app"&gt;
+&lt;h3&gt;Step 1. Create a new folder for your new &lt;a class="reference external" href="https://dash.plotly.com/"&gt;Dash&lt;/a&gt; app&lt;/h3&gt;
+&lt;p&gt;Here we will create a new folder to put our project in&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_59a1f8997cff426b87d872f24f6db91b-1"&gt;&lt;/a&gt;$ mkdir my_dash_app
+&lt;a name="rest_code_59a1f8997cff426b87d872f24f6db91b-2"&gt;&lt;/a&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; my_dash_app
+&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;div class="section" id="step-2-init-the-folder-with-git-and-a-virtualenv"&gt;
+&lt;h3&gt;Step 2. Init the folder with git and a virtualenv&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_601221b6faec49e699d177c87c9aa53b-1"&gt;&lt;/a&gt;$ git init                          &lt;span class="c1"&gt;# initializes an empty git repo&lt;/span&gt;
+&lt;a name="rest_code_601221b6faec49e699d177c87c9aa53b-2"&gt;&lt;/a&gt;$ virtualenv venv                   &lt;span class="c1"&gt;# creates a virtualenv called "venv"&lt;/span&gt;
+&lt;a name="rest_code_601221b6faec49e699d177c87c9aa53b-3"&gt;&lt;/a&gt;$ &lt;span class="nb"&gt;source&lt;/span&gt; venv/bin/activate          &lt;span class="c1"&gt;# uses the virtualenv&lt;/span&gt;
+&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;div class="section" id="step-3-pip-install-dash-and-gunicorn-package"&gt;
+&lt;h3&gt;Step 3. (Pip) install &lt;a class="reference external" href="https://dash.plotly.com/"&gt;Dash&lt;/a&gt; and &lt;a class="reference external" href="https://gunicorn.org/"&gt;Gunicorn&lt;/a&gt; package&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_529f57a4b3254d9bbae3ac4fd81aa2a6-1"&gt;&lt;/a&gt;$ pip install dash
+&lt;a name="rest_code_529f57a4b3254d9bbae3ac4fd81aa2a6-2"&gt;&lt;/a&gt;$ pip install plotly
+&lt;a name="rest_code_529f57a4b3254d9bbae3ac4fd81aa2a6-3"&gt;&lt;/a&gt;$ pip install gunicorn
+&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;div class="section" id="step-4-initialize-the-folder-with-sample-app-for-deployment"&gt;
+&lt;h3&gt;Step 4. Initialize the folder with sample app for deployment&lt;/h3&gt;
+&lt;p&gt;Create the following files in the project folder&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;app.py&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-1"&gt;&lt;/a&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;dash&lt;/span&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-2"&gt;&lt;/a&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;dash_core_components&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;dcc&lt;/span&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-3"&gt;&lt;/a&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;dash_html_components&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;html&lt;/span&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-4"&gt;&lt;/a&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-5"&gt;&lt;/a&gt;&lt;span class="n"&gt;external_stylesheets&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'https://codepen.io/chriddyp/pen/bWLwgP.css'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-6"&gt;&lt;/a&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-7"&gt;&lt;/a&gt;&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;dash&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dash&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;external_stylesheets&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;external_stylesheets&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-8"&gt;&lt;/a&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-9"&gt;&lt;/a&gt;&lt;span class="n"&gt;server&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;server&lt;/span&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-10"&gt;&lt;/a&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-11"&gt;&lt;/a&gt;&lt;span class="n"&gt;top_markdown_text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'''&lt;/span&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-12"&gt;&lt;/a&gt;&lt;span class="s1"&gt;This is my first deployed app&lt;/span&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-13"&gt;&lt;/a&gt;&lt;span class="s1"&gt;'''&lt;/span&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-14"&gt;&lt;/a&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-15"&gt;&lt;/a&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;layout&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;html&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Div&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-16"&gt;&lt;/a&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-17"&gt;&lt;/a&gt;    &lt;span class="n"&gt;dcc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Markdown&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;children&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;top_markdown_text&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-18"&gt;&lt;/a&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-19"&gt;&lt;/a&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-20"&gt;&lt;/a&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-21"&gt;&lt;/a&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;'__main__'&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;a name="rest_code_0121d8ab16954de090805c52d79d661c-22"&gt;&lt;/a&gt;    &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run_server&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;.gitignore&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;pre class="code text"&gt;&lt;a name="rest_code_7af7c75ba1884c35b945dd7d1f1cb12e-1"&gt;&lt;/a&gt;venv
+&lt;a name="rest_code_7af7c75ba1884c35b945dd7d1f1cb12e-2"&gt;&lt;/a&gt;*.pyc
+&lt;a name="rest_code_7af7c75ba1884c35b945dd7d1f1cb12e-3"&gt;&lt;/a&gt;.env
+&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Procfile&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;(Note that app refers to the filename app.py. server refers to the variable server inside that file).&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;pre class="code text"&gt;&lt;a name="rest_code_c10690133b7f4ddba9b56a70aad3ec0a-1"&gt;&lt;/a&gt;web: gunicorn app:server
+&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;requirements.txt&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This is needed for heroku buildpacks to recognize that this is a python project.
+Basic requirements.txt&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;pre class="code text"&gt;&lt;a name="rest_code_416c378dc08f41d383cd7599bc385d42-1"&gt;&lt;/a&gt;dash
+&lt;a name="rest_code_416c378dc08f41d383cd7599bc385d42-2"&gt;&lt;/a&gt;plotly
+&lt;a name="rest_code_416c378dc08f41d383cd7599bc385d42-3"&gt;&lt;/a&gt;gunicorn
+&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;p&gt;or you can fill this with:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_ad64dba7ea844cb6b88676d49bb2b0d1-1"&gt;&lt;/a&gt;$ pip freeze &amp;gt; requirements.txt
+&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;div class="section" id="step-5-installing-heroku-cli-if-you-have-not"&gt;
+&lt;h3&gt;Step 5. Installing Heroku CLI (if you have not)&lt;/h3&gt;
+&lt;p&gt;The &lt;a class="reference external" href="https://devcenter.heroku.com/articles/heroku-cli"&gt;CLI&lt;/a&gt; tool can be downloaded and installed on your system. There are few ways to install based on your operating system. As for myself,
+I am using FreeBSD, therefore I will just install the &lt;a class="reference external" href="https://www.npmjs.com/package/heroku"&gt;NPM package&lt;/a&gt; using &lt;a class="reference external" href="https://yarnpkg.com/"&gt;yarn&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Note: The method I am using will install heroku cli tools to the dash project locally.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_9c1dfe54e1e44146b5bd2ee4d80abce8-1"&gt;&lt;/a&gt;$ sudo pkg install yarn             &lt;span class="c1"&gt;# Make sure yarn is installed&lt;/span&gt;
+&lt;a name="rest_code_9c1dfe54e1e44146b5bd2ee4d80abce8-2"&gt;&lt;/a&gt;$ yarn add heroku                   &lt;span class="c1"&gt;# Will add heroku to the local project folder&lt;/span&gt;
+&lt;a name="rest_code_9c1dfe54e1e44146b5bd2ee4d80abce8-3"&gt;&lt;/a&gt;$ yarn run heroku                   &lt;span class="c1"&gt;# this will run heroku and print help messages&lt;/span&gt;
+&lt;a name="rest_code_9c1dfe54e1e44146b5bd2ee4d80abce8-4"&gt;&lt;/a&gt;$ yarn run heroku &lt;span class="o"&gt;[&lt;/span&gt;cmd&lt;span class="o"&gt;]&lt;/span&gt;             &lt;span class="c1"&gt;# To run heroku command&lt;/span&gt;
+&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;div class="section" id="step-6-initialize-heroku-add-files-to-git-and-deploy"&gt;
+&lt;h3&gt;Step 6. Initialize Heroku, add files to Git, and deploy&lt;/h3&gt;
+&lt;p&gt;Note: as stated above, as I am running the heroku cli as a npm package installed locally, I need to use yarn run command.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_ec0af265cdaa47efa312520e65e08e60-1"&gt;&lt;/a&gt;$ yarn run heroku create my-dash-app &lt;span class="c1"&gt;# change my-dash-app to a unique name&lt;/span&gt;
+&lt;a name="rest_code_ec0af265cdaa47efa312520e65e08e60-2"&gt;&lt;/a&gt;$ git add .                          &lt;span class="c1"&gt;# add all files to git&lt;/span&gt;
+&lt;a name="rest_code_ec0af265cdaa47efa312520e65e08e60-3"&gt;&lt;/a&gt;$ git commit -m &lt;span class="s1"&gt;'Initial app commit'&lt;/span&gt;
+&lt;a name="rest_code_ec0af265cdaa47efa312520e65e08e60-4"&gt;&lt;/a&gt;$ git push heroku master             &lt;span class="c1"&gt;# deploy code to heroku&lt;/span&gt;
+&lt;a name="rest_code_ec0af265cdaa47efa312520e65e08e60-5"&gt;&lt;/a&gt;$ yarn run heroku ps:scale &lt;span class="nv"&gt;web&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;     &lt;span class="c1"&gt;# run the app with a 1 heroku "dyno"&lt;/span&gt;
+&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;p&gt;After this, you should be able to view your app at &lt;a class="reference external" href="https://my-dash-app.herokuapp.com"&gt;https://my-dash-app.herokuapp.com&lt;/a&gt; or whatever the app name
+you have set to.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="step-7-update-the-code-and-redeploy"&gt;
+&lt;h3&gt;Step 7. Update the code and redeploy&lt;/h3&gt;
+&lt;p&gt;When you have made changes to the git repo, you can update heroku again using,&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_86a6fbdd10214f82920237c55084783c-1"&gt;&lt;/a&gt;$ git status                        &lt;span class="c1"&gt;# view the changes&lt;/span&gt;
+&lt;a name="rest_code_86a6fbdd10214f82920237c55084783c-2"&gt;&lt;/a&gt;$ git add .                         &lt;span class="c1"&gt;# add all the changes&lt;/span&gt;
+&lt;a name="rest_code_86a6fbdd10214f82920237c55084783c-3"&gt;&lt;/a&gt;$ git commit -m &lt;span class="s1"&gt;'a description of the changes'&lt;/span&gt;
+&lt;a name="rest_code_86a6fbdd10214f82920237c55084783c-4"&gt;&lt;/a&gt;$ git push heroku master
+&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="references"&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://dash.plotly.com/deployment"&gt;Deploying Dash Apps&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://devcenter.heroku.com/articles/getting-started-with-python"&gt;Getting Started on Heroku with Python&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="reference external" href="https://github.com/francoisstamant/dash_heroku_deployment"&gt;dash_heroku_deployment&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;</description><guid>https://0xfe11.github.io/posts/deploying-dash-application-to-heroku-for-freebsd/</guid><pubDate>Sun, 03 Jan 2021 02:18:32 GMT</pubDate></item><item><title>Recap on 2020</title><link>https://0xfe11.github.io/posts/recap-on-2020/</link><dc:creator>0xfe11</dc:creator><description>&lt;div&gt;&lt;p&gt;Looking back on 2020, these are some of the things I have done.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://0xfe11.github.io/posts/3dbuzz-is-closing-down/"&gt;Created a scraper for the page 3DBuzz&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://0xfe11.github.io/posts/my-new-arch-set-up/"&gt;Installed arch on my old Lenovo&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://0xfe11.github.io/posts/from-linux-to-bsds/"&gt;Decided to try out FreeBSD&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://0xfe11.github.io/posts/tisc-ctf-challenge-2020/"&gt;Joined my first CTF challenge&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;So far this year have been quite fruitful for me in terms of personal growth and experience. Looking forward to another year of growth and learning.
+My biggest takeaway for year 2020 was to gave myself another chance and explore a new OS, mainly FreeBSD. I really like everything about it. I think
+it is a fairly stable OS. Cheers, have a happy new year.&lt;/p&gt;&lt;/div&gt;</description><guid>https://0xfe11.github.io/posts/recap-on-2020/</guid><pubDate>Wed, 30 Dec 2020 09:26:04 GMT</pubDate></item><item><title>Setting up Chinese Pinyin on my FreeBSD</title><link>https://0xfe11.github.io/posts/setting-up-chinese-pinyin-on-my-freebsd/</link><dc:creator>0xfe11</dc:creator><description>&lt;div&gt;&lt;p&gt;A few days earlier, I was wondering if I can set up pinyin input on my FreeBSD machines. After some research, big thanks to outpaddling on his post on the &lt;a class="reference external" href="https://forums.freebsd.org/threads/chinese-input-method-with-fcitx.67149/"&gt;FreeBSD forum&lt;/a&gt; for pointing me in the right direction.
+I was able to get it to work. Here is the guide to set up pinyin on your FreeBSD machine.&lt;/p&gt;
+&lt;p&gt;First, install the chinese fonts,&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_d8f1ccff44ff4775a72bbfb5f952924a-1"&gt;&lt;/a&gt;$ doas pkg install zh-CJKUnifonts zh-font-std zh-opendesktop-fonts zh-CNS11643-font zh-kcfonts
+&lt;/pre&gt;&lt;p&gt;Next, install the input engine, here we are going to use fcitx. As per recommendation from the original poster, it seems that libpinyin and sunpinyin works well.&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_379d086656ab4888b2594a2fc13c49a6-1"&gt;&lt;/a&gt;$ doas pkg install fcitx-qt5 zh-fcitx-configtool zh-fcitx-libpinyin zh-fcitx-sunpinyin
+&lt;/pre&gt;&lt;p&gt;After installation is done, add the following lines to your .xinitrc.&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_7cb3589dd8d841a1b4076074b3155733-1"&gt;&lt;/a&gt;&lt;span class="nv"&gt;XMODIFIERS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'@im=fcitx'&lt;/span&gt;
+&lt;a name="rest_code_7cb3589dd8d841a1b4076074b3155733-2"&gt;&lt;/a&gt;&lt;span class="nv"&gt;GTK_IM_MODULE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;fcitx
+&lt;a name="rest_code_7cb3589dd8d841a1b4076074b3155733-3"&gt;&lt;/a&gt;&lt;span class="nv"&gt;GTK3_IM_MODULE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;fcitx
+&lt;a name="rest_code_7cb3589dd8d841a1b4076074b3155733-4"&gt;&lt;/a&gt;&lt;span class="nv"&gt;QT4_IM_MODULE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;fcitx &lt;span class="c1"&gt;# Or use qtconfig to change&lt;/span&gt;
+&lt;a name="rest_code_7cb3589dd8d841a1b4076074b3155733-5"&gt;&lt;/a&gt;&lt;span class="nb"&gt;export&lt;/span&gt; XMODIFIERS GTK_IM_MODULE GTK3_IM_MODULE QT4_IM_MODULE
+&lt;/pre&gt;&lt;p&gt;Lastly for those using a desktop environment, you can add the fcitx to startup by doing the following,&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_e930652fbe874f3994a3025639798817-1"&gt;&lt;/a&gt;$ ln -s /usr/local/share/applications/fcitx.desktop ~/.config/autostart
+&lt;/pre&gt;&lt;p&gt;And now you can restart X and see if fcitx is loaded. On my mate session, there is now an additional keyboard icon (in the middle) on my panel.&lt;/p&gt;
+&lt;img alt="/images/setting-up-chinese-pinyin-on-my-freebsd_0.png" src="https://0xfe11.github.io/images/setting-up-chinese-pinyin-on-my-freebsd_0.png"&gt;
+&lt;p&gt;Right click on it to open the panel and choose "Configure Current Input Method".&lt;/p&gt;
+&lt;img alt="/images/setting-up-chinese-pinyin-on-my-freebsd_1.png" src="https://0xfe11.github.io/images/setting-up-chinese-pinyin-on-my-freebsd_1.png"&gt;
+&lt;p&gt;Make sure "Only Show Current Language" is unchecked and scroll to Chinese (China) and select Pinyin (LibPinyin) or Sunpinyun. To add the input, click on the right arrow and make sure the selected input
+is added to current input.&lt;/p&gt;
+&lt;img alt="/images/setting-up-chinese-pinyin-on-my-freebsd_2.png" src="https://0xfe11.github.io/images/setting-up-chinese-pinyin-on-my-freebsd_2.png"&gt;
+&lt;p&gt;Now to test if the pinyin input works, you can open a text editior, and click on the fcitx icon to toggle between english and chinese pinyin input method. You can start typing and a small suggestion box should appear.&lt;/p&gt;
+&lt;img alt="/images/setting-up-chinese-pinyin-on-my-freebsd_3.png" src="https://0xfe11.github.io/images/setting-up-chinese-pinyin-on-my-freebsd_3.png"&gt;&lt;/div&gt;</description><guid>https://0xfe11.github.io/posts/setting-up-chinese-pinyin-on-my-freebsd/</guid><pubDate>Sun, 06 Dec 2020 02:27:45 GMT</pubDate></item><item><title>Using webcam on Firefox in FreeBSD</title><link>https://0xfe11.github.io/posts/using-webcam-on-firefox-in-freebsd/</link><dc:creator>0xfe11</dc:creator><description>&lt;div&gt;&lt;p&gt;Using webcam is a common thing to do on a laptop and it is not hard to set up in FreeBSD as well.&lt;/p&gt;
+&lt;p&gt;First go ahead and install webcamd,&lt;/p&gt;
+&lt;pre class="code sh"&gt;&lt;a name="rest_code_cd2aee61acaf44fabdf21db46e6218e9-1"&gt;&lt;/a&gt;$ doas pkg install webcamd
+&lt;/pre&gt;&lt;p&gt;According to the &lt;a class="reference external" href="https://www.freebsd.org/cgi/man.cgi?query=webcamd&amp;amp;sektion=8&amp;amp;manpath=freebsd-release-ports"&gt;man page&lt;/a&gt;, webcamd is a daemon that provides access to webcam devices and such. According to the man pages, we need to load
+the cuse kernel module as well as start the webcamd daemon.&lt;/p&gt;
+&lt;pre class="code sh"&gt;&lt;a name="rest_code_f0c89b780ee145b284d0b274583e89d8-1"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Adding cuse to bootloader and webcamd to start up services&lt;/span&gt;
+&lt;a name="rest_code_f0c89b780ee145b284d0b274583e89d8-2"&gt;&lt;/a&gt;$ doas &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;'cuse_load="YES"'&lt;/span&gt; &amp;gt;&amp;gt; /boot/loader.conf
+&lt;a name="rest_code_f0c89b780ee145b284d0b274583e89d8-3"&gt;&lt;/a&gt;$ doas sysrc &lt;span class="nv"&gt;webcamd_enable&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"YES"&lt;/span&gt;
+&lt;/pre&gt;&lt;p&gt;To load the kernel modules and the webcamd service without reboot, you can do the following,&lt;/p&gt;
+&lt;pre class="code sh"&gt;&lt;a name="rest_code_cadbe6b765dc43339eebf543e90fc0b3-1"&gt;&lt;/a&gt;$ doas kldload cuse
+&lt;a name="rest_code_cadbe6b765dc43339eebf543e90fc0b3-2"&gt;&lt;/a&gt;$ doas service webcamd start
+&lt;/pre&gt;&lt;p&gt;After which, you can go online with your Firefox and do a webcam test online. I am relatively surprised as how easy it is to set up webcam support
+on my FreeBSD. A shoutout to this &lt;a class="reference external" href="https://www.davidschlachter.com/misc/freebsd-webcam-browser"&gt;David Schlachter's page&lt;/a&gt; for providing me the initial steps to setting up webcam on FreeBSD.&lt;/p&gt;&lt;/div&gt;</description><guid>https://0xfe11.github.io/posts/using-webcam-on-firefox-in-freebsd/</guid><pubDate>Tue, 17 Nov 2020 12:20:04 GMT</pubDate></item><item><title>Trying out a new light theme</title><link>https://0xfe11.github.io/posts/trying-out-a-new-light-theme/</link><dc:creator>0xfe11</dc:creator><description>&lt;div&gt;&lt;p&gt;Recently I came across an article by Brent. In the article, he talks about how light themes are better and easier on the eyes. So here I am I created a light theme for my blog, I just switched the colors of background and foreground of the old palette (I got from Lospec).&lt;/p&gt;
+&lt;p&gt;In addition, the blog is not the only thing getting a new face lift. I have decided to use the light theme (gruvbox) on my desktop environment, xterm as well as my neovim.&lt;/p&gt;
+&lt;p&gt;Here is what my new desktop looks like now.&lt;/p&gt;
+&lt;img alt="/images/trying-out-a-new-light-theme_0.png" src="https://0xfe11.github.io/images/trying-out-a-new-light-theme_0.png"&gt;
+&lt;p&gt;Which I like very much right now. I am currently using Herbstluftwm as my tiling manager and dzen2 as my statusbar.&lt;/p&gt;&lt;/div&gt;</description><guid>https://0xfe11.github.io/posts/trying-out-a-new-light-theme/</guid><pubDate>Wed, 07 Oct 2020 12:47:06 GMT</pubDate></item><item><title>Setting up a single user XFCE environment for FreeBSD</title><link>https://0xfe11.github.io/posts/setting-up-a-single-user-xfce-environment-for-freebsd/</link><dc:creator>0xfe11</dc:creator><description>&lt;div&gt;&lt;p&gt;Recently I wanted to install XFCE on an old laptop of mine for someone who was not very familiar with the command line interface. I had
+previously installed a tiling manager but I think having a desktop environment will be more user friendly. In addition, there will most likely
+be the only person using the machine so I decided to set it up that way.&lt;/p&gt;
+&lt;p&gt;This are my notes on how to set up the xfce desktop environment, feel free to install your own desktop environment of choice. This guide will
+assume that you have just installed FreeBSD with a user which is (at least) added to the operator group. I am also using tcsh as my login
+shell.&lt;/p&gt;
+&lt;div class="section" id="steps"&gt;
+&lt;h2&gt;Steps&lt;/h2&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;&lt;p&gt;Install xfce&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Enable shutdown option in xfce&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Enable autologin to xfce&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="section" id="install-xfce"&gt;
+&lt;h3&gt;1. Install xfce&lt;/h3&gt;
+&lt;p&gt;Proceed to install xfce or your desktop environment of choice. Before that, ensure that Xorg is also installed.&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_f77d8a4347e4420f8e72b4ec29b0b899-1"&gt;&lt;/a&gt;$ doas pkg update
+&lt;a name="rest_code_f77d8a4347e4420f8e72b4ec29b0b899-2"&gt;&lt;/a&gt;$ doas pkg install xorg xfce
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="enable-shutdown-option-in-xfce"&gt;
+&lt;h3&gt;2. Enable shutdown option in xfce&lt;/h3&gt;
+&lt;p&gt;By default, after you install xfce and start the xfce, one thing you will notice is that when you click on your name, there is only an option
+for logout. Shutdown/restart/hibernate seems to be grayed out. To enable the buttons, you will have to do the following.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;Make sure myuser is in group operator&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Enable dbus in rc.conf&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Adding rules in polkit&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="section" id="make-sure-myuser-is-in-group-operator"&gt;
+&lt;h4&gt;Make sure myuser is in group operator&lt;/h4&gt;
+&lt;p&gt;Make sure myuser using the desktop environment is in group operator. This can be checked with the following command,&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_58555d577ef34b7b95a7e33f8fbc9e4e-1"&gt;&lt;/a&gt;$ id myuser
+&lt;a name="rest_code_58555d577ef34b7b95a7e33f8fbc9e4e-2"&gt;&lt;/a&gt;&lt;span class="nv"&gt;uid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1001&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;myuser&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nv"&gt;gid&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1001&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;myuser&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="nv"&gt;groups&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1001&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;myuser&lt;span class="o"&gt;)&lt;/span&gt;,5&lt;span class="o"&gt;(&lt;/span&gt;operator&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;p&gt;Otherwise if myuser is not in the group, use the following to add it to the group,&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_5becb411330b40e898d5033311ff890a-1"&gt;&lt;/a&gt;$ doas pw groupmod operator -m myuser
+&lt;/pre&gt;&lt;p&gt;Verify it again using the id command.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="enable-dbus-in-rc-conf"&gt;
+&lt;h4&gt;Enable dbus in rc.conf&lt;/h4&gt;
+&lt;p&gt;D-Bus is installed as part of the xfce package according to the FreeBSD &lt;a class="reference external" href="https://www.freebsd.org/doc/handbook/x11-wm.html"&gt;handbook&lt;/a&gt; and can be
+enabled in your rc.conf by adding the following line to your rc.conf.&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_d73bccb927b44ea1be1235697bae6b5e-1"&gt;&lt;/a&gt;$ doas sysrc &lt;span class="nv"&gt;dbus_enable&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"YES"&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="adding-rules-in-polkit"&gt;
+&lt;h4&gt;Adding rules in polkit&lt;/h4&gt;
+&lt;p&gt;Add a new rule to polkit, assuming shutdown.rules does not exist,&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_04b18885b11e4e45b71cf92bceefc2ae-1"&gt;&lt;/a&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; /usr/local/etc/polkit-1/rules.d
+&lt;a name="rest_code_04b18885b11e4e45b71cf92bceefc2ae-2"&gt;&lt;/a&gt;$ doas touch shutdown.rules
+&lt;/pre&gt;&lt;p&gt;Paste the contents below to the file shutdown.rules&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-1"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# shutdown.rules&lt;/span&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-2"&gt;&lt;/a&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-3"&gt;&lt;/a&gt;polkit.addRule&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;function&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;action, subject&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-4"&gt;&lt;/a&gt;  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;action.id &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"org.freedesktop.consolekit.system.restart"&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-5"&gt;&lt;/a&gt;  action.id &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"org.freedesktop.consolekit.system.stop"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-6"&gt;&lt;/a&gt;  &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; subject.isInGroup&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"operator"&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-7"&gt;&lt;/a&gt;    &lt;span class="k"&gt;return&lt;/span&gt; polkit.Result.YES&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-8"&gt;&lt;/a&gt;  &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-9"&gt;&lt;/a&gt;&lt;span class="o"&gt;})&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-10"&gt;&lt;/a&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-11"&gt;&lt;/a&gt;polkit.addRule&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;function&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;action, subject&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-12"&gt;&lt;/a&gt;  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;action.id &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"org.freedesktop.consolekit.system.suspend"&lt;/span&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-13"&gt;&lt;/a&gt;  &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; subject.isInGroup&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"operator"&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-14"&gt;&lt;/a&gt;    &lt;span class="k"&gt;return&lt;/span&gt; polkit.Result.YES&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-15"&gt;&lt;/a&gt;  &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;a name="rest_code_80621a9d99e54915bb347497f3e79e81-16"&gt;&lt;/a&gt;&lt;span class="o"&gt;})&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;p&gt;Reboot your FreeBSD.&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_e209b3038cf8454b8392d4a9f2bb4153-1"&gt;&lt;/a&gt;$ doas shutdown -r now
+&lt;/pre&gt;&lt;p&gt;Log into myuser and start xfce.&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_c0e7c8597b6e4d5c856acd7ad119378b-1"&gt;&lt;/a&gt;$ startxfce4
+&lt;/pre&gt;&lt;p&gt;When clicking log out, the shutdown/restart should be enabled now instead of greyed out.&lt;/p&gt;
+&lt;img alt="/images/setting-up-xfce-environment-for-single-user_0.PNG" src="https://0xfe11.github.io/images/setting-up-xfce-environment-for-single-user_0.PNG"&gt;
+&lt;p&gt;Next we are going to set up auto login for myuser.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="enable-autologin-to-xfce"&gt;
+&lt;h3&gt;3. Enable autologin to xfce&lt;/h3&gt;
+&lt;p&gt;Firstly we copy startxfce4 script to the user's home .xinitrc.&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_78ebed2617b64425a74f1e2d1c23c0eb-1"&gt;&lt;/a&gt;$ cp /usr/local/bin/startxfce4 ~/.xinitrc
+&lt;/pre&gt;&lt;p&gt;Next we will edit /etc/gettytab&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_abc4ab5440754ec78bbd3c6403c234c2-1"&gt;&lt;/a&gt;$ doas vi /etc/gettytab
+&lt;/pre&gt;&lt;p&gt;And add the following into /etc/gettytab&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_9b91a5b877924703812c5836e2230240-1"&gt;&lt;/a&gt;Al&lt;span class="p"&gt;|&lt;/span&gt;Autologin myuser:&lt;span class="se"&gt;\&lt;/span&gt;
+&lt;a name="rest_code_9b91a5b877924703812c5836e2230240-2"&gt;&lt;/a&gt;   :al&lt;span class="o"&gt;=&lt;/span&gt;myuser:tc&lt;span class="o"&gt;=&lt;/span&gt;Pc:
+&lt;/pre&gt;&lt;p&gt;Next we will edit /etc/ttys&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_8f8f2f0a2cc34c56ab281424b071a3b8-1"&gt;&lt;/a&gt;$ doas vi /etc/ttys
+&lt;/pre&gt;&lt;p&gt;And change the following lines into /etc/ttys, from&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_eb646b74f1eb4007bf9f04028f31d8e1-1"&gt;&lt;/a&gt;ttyv0    &lt;span class="s2"&gt;"/usr/libexec/getty Pc"&lt;/span&gt;   xterm   onifexists  secure
+&lt;/pre&gt;&lt;p&gt;to the following&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_6fe7678690c2463394aeb1f269e1df6b-1"&gt;&lt;/a&gt;ttyv0    &lt;span class="s2"&gt;"/usr/libexec/getty Al"&lt;/span&gt;   xterm   onifexists  secure
+&lt;/pre&gt;&lt;p&gt;When you have completed the above, your FreeBSD should be able to login automatically to myuser after you reboot. You can verify by rebooting,&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_e91f42f87133441c9dda4096c535d908-1"&gt;&lt;/a&gt;$ doas shutdown -r now
+&lt;/pre&gt;&lt;p&gt;and when you see myuser logged in automatically, the configuration is correct. Now the final step is to add a .login script to execute
+automatically whenever we are logged in.&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_d705f5033171457b8bf121e7f3aef3fa-1"&gt;&lt;/a&gt;$ vi .login
+&lt;/pre&gt;&lt;p&gt;and add the following lines, (note: I am using tcsh as my shell for myuser, change the script accordingly to suit your shell)&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_189092fd263c419da3b270691e9ac71a-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;$tty&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"ttyv0"&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+&lt;a name="rest_code_189092fd263c419da3b270691e9ac71a-2"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;echo&lt;/span&gt; Starting xfce...
+&lt;a name="rest_code_189092fd263c419da3b270691e9ac71a-3"&gt;&lt;/a&gt;  startx
+&lt;a name="rest_code_189092fd263c419da3b270691e9ac71a-4"&gt;&lt;/a&gt;endif
+&lt;/pre&gt;&lt;p&gt;Afterwards, you can test if the .login script works by logging out.&lt;/p&gt;
+&lt;pre class="code shell"&gt;&lt;a name="rest_code_4088a958f79a45e4ba76b16f56124b18-1"&gt;&lt;/a&gt;$ &lt;span class="nb"&gt;exit&lt;/span&gt;
+&lt;/pre&gt;&lt;p&gt;This will let it logout and because of the autologin behavior, it should log back into myuser and run the .login script. If the all else
+succeed, you will be able to see a xfce environment with shutdown/restart/suspend buttons working.&lt;/p&gt;
+&lt;p&gt;Here are a list of resources that I got my scripts and configurations from&lt;/p&gt;
+&lt;p&gt;FreeBSD Handbook&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://www.freebsd.org/doc/handbook/x11-wm.html"&gt;x11-wm&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;FreeBSD Forums&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://forums.freebsd.org/threads/display-manager.47305/#post-264818"&gt;Display Manager&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://forums.freebsd.org/threads/trouble-calling-startx-in-start-up-script.22304/#post-125787"&gt;Trouble calling 'startx' in Start-Up script&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a class="reference external" href="https://forums.freebsd.org/threads/xfce4-no-abiltiy-to-shutdown-and-reboot-that-went-away.72671/"&gt;xfce4 no abiltiy to shutdown and reboot that went away&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;</description><guid>https://0xfe11.github.io/posts/setting-up-a-single-user-xfce-environment-for-freebsd/</guid><pubDate>Tue, 15 Sep 2020 14:30:59 GMT</pubDate></item><item><title>TISC CTF challenge 2020</title><link>https://0xfe11.github.io/posts/tisc-ctf-challenge-2020/</link><dc:creator>0xfe11</dc:creator><description>&lt;div&gt;&lt;p&gt;TISC CTF challenge 2020 is a CTF challenge organized by the Centre for Strategic Infocomm
+Technologies (CSIT). There a few stages in the challenge which I will talk about, and as I did not
+complete the whole CTF and it was a 48 hour event, I did not have a chance to go back and complete
+it. I am still figuring out stage 3 on my own time. Do let me know if you completed it, I am
+curious about solving it.&lt;/p&gt;
+&lt;div class="section" id="stages"&gt;
+&lt;h2&gt;Stages&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;Stage 1 ( Cracking zip challenge )&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Stage 2 ( Finding the public key in binary )&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Stage 3 ( Decrypting file challenge )&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="section" id="stage-1"&gt;
+&lt;h3&gt;Stage 1&lt;/h3&gt;
+&lt;p&gt;In this stage, there is a password protected zip file with instructions to extract the content
+buried inside the compressed file. Apparently the file was compressed a few times by different
+programs and the final zip file was password protected. The only hint about the password is that,
+it is a password of length 6 and only contains hexadecimal string (meaning from 000000 - FFFFFF).&lt;/p&gt;
+&lt;div class="section" id="cracking-the-zip-file"&gt;
+&lt;h4&gt;Cracking the zip file&lt;/h4&gt;
+&lt;p&gt;This part is fairly straightforward with password cracking tool, fcrackzip.&lt;/p&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_e3835383939643d6b3392f36ef3b83e8-1"&gt;&lt;/a&gt;$ fcrackzip -c &lt;span class="m"&gt;1&lt;/span&gt;:abcdefABCDEF -l &lt;span class="m"&gt;6&lt;/span&gt; -u file.zip
+&lt;/pre&gt;&lt;p&gt;This will run fairly quickly and will get us the password we need to decompress the file. The file
+content inside is a file name temp.mess. According to the description given, the file is compressed/
+encoded a few times. To verify this, run the file command on the temp.mess file. Doing this will
+reveal it as a gz file.&lt;/p&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_b2e6b0c0af694515867dadf05e6a146b-1"&gt;&lt;/a&gt;$ file temp.mess
+&lt;a name="rest_code_b2e6b0c0af694515867dadf05e6a146b-2"&gt;&lt;/a&gt;temp.mess: gz ....
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="decompressing-and-decoding"&gt;
+&lt;h4&gt;Decompressing and decoding&lt;/h4&gt;
+&lt;p&gt;After we decompress the file, we realize that the output of the file is another xz compressed file,
+we will decompress the file a few more times and we will
+see that the output will be compressed with one of the following,&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;bzip&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;gzip&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;xz&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;zlib&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;and the following encoding being used,&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;p&gt;base64&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;hexadecimal&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Basically I wrote a python script to read the file using libmagic to determine their file type,
+if it is any of the above, I will either decode it or decompress it using the corresponding library
+in python. The end result will be a json file with the flag.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="stage-2"&gt;
+&lt;h3&gt;Stage 2&lt;/h3&gt;
+&lt;p&gt;In stage 2, a ransomware binary is shared and the objective is to find the public key used. The
+flag can then be obtained by getting the sha256 hash of the public key. The hint in the challenge
+is that the public key is in the form LS0. If you are unfamiliar like I was initially, the base64
+encoding of the public key is in the form LS0....&lt;/p&gt;
+&lt;p&gt;Now that the string to find is given, we can start to hunt for the keys.&lt;/p&gt;
+&lt;div class="section" id="analyze-the-binary"&gt;
+&lt;h4&gt;Analyze the binary&lt;/h4&gt;
+&lt;p&gt;Running file command on the binary indicates that it is an ELF 64 binary built with Go compiler.
+It is also unstripped which is useful for our analysis.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="unpack-the-binary"&gt;
+&lt;h4&gt;Unpack the binary&lt;/h4&gt;
+&lt;p&gt;When analyzing the binary, make sure it is unpacked before doing in depth analysis. I made the
+mistake of analyzing with strings but I managed to spot the string "UPX" that made me remember that
+binary can be packed. Therefore you can use UPX here to unpack it.&lt;/p&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_74a4a5ea0014442982b94aea64240672-1"&gt;&lt;/a&gt;$ upx -d binary
+&lt;/pre&gt;&lt;p&gt;After which I ran strings again to check, unfortunately in Go, the strings are not null terminated
+therefore strings might not give any useful result.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="analyze-binary-in-ghidra"&gt;
+&lt;h4&gt;Analyze binary in Ghidra&lt;/h4&gt;
+&lt;p&gt;After I realized strings is not as useful, I loaded the binary in Ghidra and have a look at it
+through some static analysis. I note down the functions of interest and their memory address. In Go,
+the main is main_main, and the init is in main_init. Go uses a stack calling convention as opposed
+to the usual register based x86 calling convention. This made the analysis a bit harder for me as I
+learned afterwards.&lt;/p&gt;
+&lt;p&gt;Anyways there are some functions of interest to note. One of which is the DecodeString function
+that is called in main_main.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="getting-the-flag-with-gdb"&gt;
+&lt;h4&gt;Getting the flag with GDB&lt;/h4&gt;
+&lt;p&gt;Be careful when dealing with the sample, although it is not of a malicious intent, it could cause
+potential nusiance and thus I would advice to run the binary in a VM.&lt;/p&gt;
+&lt;p&gt;I start GDB with the binary and immediately set the breakpoint at the DecodeString function.
+Below is how I set the breakpoint and check the function.&lt;/p&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_7037b92f3cb84fdd8d1a60b755aa85e3-1"&gt;&lt;/a&gt;&lt;span class="o"&gt;(&lt;/span&gt;GDB&lt;span class="o"&gt;)&lt;/span&gt; b *0x12345    &lt;span class="c1"&gt;# Set breakpoint at address 0x12345&lt;/span&gt;
+&lt;a name="rest_code_7037b92f3cb84fdd8d1a60b755aa85e3-2"&gt;&lt;/a&gt;&lt;span class="o"&gt;(&lt;/span&gt;GDB&lt;span class="o"&gt;)&lt;/span&gt; r             &lt;span class="c1"&gt;# Run the program&lt;/span&gt;
+&lt;a name="rest_code_7037b92f3cb84fdd8d1a60b755aa85e3-3"&gt;&lt;/a&gt;&lt;span class="o"&gt;(&lt;/span&gt;GDB&lt;span class="o"&gt;)&lt;/span&gt; si            &lt;span class="c1"&gt;# Step into&lt;/span&gt;
+&lt;a name="rest_code_7037b92f3cb84fdd8d1a60b755aa85e3-4"&gt;&lt;/a&gt;&lt;span class="o"&gt;(&lt;/span&gt;GDB&lt;span class="o"&gt;)&lt;/span&gt; info args     &lt;span class="c1"&gt;# Check the func args passed&lt;/span&gt;
+&lt;/pre&gt;&lt;p&gt;Here we should see the execution enters the function and when it enters the function, info args
+command will print the args passed into the function. Here we will see that one of the argument is
+a string of this form "LS0...."&lt;/p&gt;
+&lt;p&gt;Here we can copy and paste the string and test if the string is really what we are looking for.&lt;/p&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_b194f9dc416941a9b66e0f4e32090661-1"&gt;&lt;/a&gt;$ &lt;span class="nb"&gt;echo&lt;/span&gt; LS0.... &lt;span class="p"&gt;|&lt;/span&gt; base64 -d
+&lt;/pre&gt;&lt;p&gt;This should print ---Begin ..... which marks the public key in pem encoding. To get the flag, we can
+do the following&lt;/p&gt;
+&lt;pre class="code bash"&gt;&lt;a name="rest_code_c79e7243c0514169a42ef7ad24cb154f-1"&gt;&lt;/a&gt;$ sha256 -s LS0...
+&lt;/pre&gt;&lt;p&gt;This will be the flag for stage 2.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="conclusion"&gt;
+&lt;h3&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;Unfortunately I did not make it to stage 3. I did some offline analysis on my own but I could not
+figure out what the binary is doing. I hope one day I will post about the analysis of stage 3.
+That is all for my TISC 2020 CTF. It have been a nice experience for me.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;</description><guid>https://0xfe11.github.io/posts/tisc-ctf-challenge-2020/</guid><pubDate>Tue, 08 Sep 2020 11:59:39 GMT</pubDate></item><item><title>Today I learn some Python tips!</title><link>https://0xfe11.github.io/posts/today-i-learn-some-python-tips/</link><dc:creator>0xfe11</dc:creator><description>&lt;div&gt;&lt;p&gt;I came across a &lt;a class="reference external" href="https://www.youtube.com/watch?v=sbtbIqEG4nI"&gt;YouTube&lt;/a&gt; video in April that showed some of the (not so common) features and tips and tips.&lt;/p&gt;
+&lt;div class="section" id="hello-world"&gt;
+&lt;h2&gt;1. Hello World&lt;/h2&gt;
+&lt;p&gt;The following code will print hello world. How apt to start.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_e6b5fe6ed28449b0b968a8d10a975c4f-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;hello_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_e6b5fe6ed28449b0b968a8d10a975c4f-2"&gt;&lt;/a&gt;  &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;__hello__&lt;/span&gt;
+&lt;a name="rest_code_e6b5fe6ed28449b0b968a8d10a975c4f-3"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e6b5fe6ed28449b0b968a8d10a975c4f-4"&gt;&lt;/a&gt; &lt;span class="n"&gt;hello_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="zen-of-python"&gt;
+&lt;h2&gt;2. Zen of Python&lt;/h2&gt;
+&lt;p&gt;This is actually an easter egg, calling zen_fn() will print a zen message.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_ebc70f81f7eb44508d2e8842d7451a75-1"&gt;&lt;/a&gt;&lt;span class="c1"&gt;## Zen of python&lt;/span&gt;
+&lt;a name="rest_code_ebc70f81f7eb44508d2e8842d7451a75-2"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;zen_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_ebc70f81f7eb44508d2e8842d7451a75-3"&gt;&lt;/a&gt;  &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;this&lt;/span&gt;
+&lt;a name="rest_code_ebc70f81f7eb44508d2e8842d7451a75-4"&gt;&lt;/a&gt;
+&lt;a name="rest_code_ebc70f81f7eb44508d2e8842d7451a75-5"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Will print a zen message&lt;/span&gt;
+&lt;a name="rest_code_ebc70f81f7eb44508d2e8842d7451a75-6"&gt;&lt;/a&gt;&lt;span class="n"&gt;zen_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="python-enums"&gt;
+&lt;h2&gt;3. Python Enums&lt;/h2&gt;
+&lt;p&gt;This is how you can emulate enums in python,&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_4a27ae0ca37a4b52882d8e5579f6ed65-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;enum_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_4a27ae0ca37a4b52882d8e5579f6ed65-2"&gt;&lt;/a&gt;  &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Enum&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;a name="rest_code_4a27ae0ca37a4b52882d8e5579f6ed65-3"&gt;&lt;/a&gt;    &lt;span class="n"&gt;Red&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Green&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Blue&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_4a27ae0ca37a4b52882d8e5579f6ed65-4"&gt;&lt;/a&gt;    &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_4a27ae0ca37a4b52882d8e5579f6ed65-5"&gt;&lt;/a&gt;
+&lt;a name="rest_code_4a27ae0ca37a4b52882d8e5579f6ed65-6"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Enum&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Green&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_4a27ae0ca37a4b52882d8e5579f6ed65-7"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Enum&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Red&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_4a27ae0ca37a4b52882d8e5579f6ed65-8"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Enum&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_4a27ae0ca37a4b52882d8e5579f6ed65-9"&gt;&lt;/a&gt;
+&lt;a name="rest_code_4a27ae0ca37a4b52882d8e5579f6ed65-10"&gt;&lt;/a&gt;&lt;span class="n"&gt;enum_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="multiple-assignment"&gt;
+&lt;h2&gt;4. Multiple assignment&lt;/h2&gt;
+&lt;p&gt;In this example, you can assign multiple values to multiple values as you like, you can also do so for a list or tuple.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_702289bfa49d4715bb239d53d1e8dc49-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;mult_assignment_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_702289bfa49d4715bb239d53d1e8dc49-2"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;
+&lt;a name="rest_code_702289bfa49d4715bb239d53d1e8dc49-3"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_702289bfa49d4715bb239d53d1e8dc49-4"&gt;&lt;/a&gt;
+&lt;a name="rest_code_702289bfa49d4715bb239d53d1e8dc49-5"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Using this to decouple the list&lt;/span&gt;
+&lt;a name="rest_code_702289bfa49d4715bb239d53d1e8dc49-6"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;z&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;a name="rest_code_702289bfa49d4715bb239d53d1e8dc49-7"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_702289bfa49d4715bb239d53d1e8dc49-8"&gt;&lt;/a&gt;
+&lt;a name="rest_code_702289bfa49d4715bb239d53d1e8dc49-9"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Likewise for tuple&lt;/span&gt;
+&lt;a name="rest_code_702289bfa49d4715bb239d53d1e8dc49-10"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;z&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_702289bfa49d4715bb239d53d1e8dc49-11"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_702289bfa49d4715bb239d53d1e8dc49-12"&gt;&lt;/a&gt;
+&lt;a name="rest_code_702289bfa49d4715bb239d53d1e8dc49-13"&gt;&lt;/a&gt;&lt;span class="n"&gt;mult_assignment_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="format-strings"&gt;
+&lt;h2&gt;5. Format strings&lt;/h2&gt;
+&lt;p&gt;This is actually quite useful and I have been using it quite a lot. Basically, you add a f in front of your string and inside, you can use
+the variable name directly.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_4ddf71ffe1784214add000edb10ea737-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fstring_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_4ddf71ffe1784214add000edb10ea737-2"&gt;&lt;/a&gt;  &lt;span class="n"&gt;age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;
+&lt;a name="rest_code_4ddf71ffe1784214add000edb10ea737-3"&gt;&lt;/a&gt;
+&lt;a name="rest_code_4ddf71ffe1784214add000edb10ea737-4"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Print only 10&lt;/span&gt;
+&lt;a name="rest_code_4ddf71ffe1784214add000edb10ea737-5"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_4ddf71ffe1784214add000edb10ea737-6"&gt;&lt;/a&gt;
+&lt;a name="rest_code_4ddf71ffe1784214add000edb10ea737-7"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Print the result of evaluation age + 10&lt;/span&gt;
+&lt;a name="rest_code_4ddf71ffe1784214add000edb10ea737-8"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;age&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_4ddf71ffe1784214add000edb10ea737-9"&gt;&lt;/a&gt;
+&lt;a name="rest_code_4ddf71ffe1784214add000edb10ea737-10"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Same as above&lt;/span&gt;
+&lt;a name="rest_code_4ddf71ffe1784214add000edb10ea737-11"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;F&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;age&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_4ddf71ffe1784214add000edb10ea737-12"&gt;&lt;/a&gt;
+&lt;a name="rest_code_4ddf71ffe1784214add000edb10ea737-13"&gt;&lt;/a&gt;&lt;span class="n"&gt;fstring_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="enumerate-function"&gt;
+&lt;h2&gt;6. Enumerate function&lt;/h2&gt;
+&lt;p&gt;Enumerate function can be useful if you want to do something like iterate through the entire list and printing the items in the list.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_2d04eaf3ec144845844d04da8daee892-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;enumerate_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_2d04eaf3ec144845844d04da8daee892-2"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;a name="rest_code_2d04eaf3ec144845844d04da8daee892-3"&gt;&lt;/a&gt;
+&lt;a name="rest_code_2d04eaf3ec144845844d04da8daee892-4"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# not using enumerate&lt;/span&gt;
+&lt;a name="rest_code_2d04eaf3ec144845844d04da8daee892-5"&gt;&lt;/a&gt;  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)):&lt;/span&gt;
+&lt;a name="rest_code_2d04eaf3ec144845844d04da8daee892-6"&gt;&lt;/a&gt;    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;a name="rest_code_2d04eaf3ec144845844d04da8daee892-7"&gt;&lt;/a&gt;
+&lt;a name="rest_code_2d04eaf3ec144845844d04da8daee892-8"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# using enumerate&lt;/span&gt;
+&lt;a name="rest_code_2d04eaf3ec144845844d04da8daee892-9"&gt;&lt;/a&gt;  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;enumerate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;a name="rest_code_2d04eaf3ec144845844d04da8daee892-10"&gt;&lt;/a&gt;    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_2d04eaf3ec144845844d04da8daee892-11"&gt;&lt;/a&gt;
+&lt;a name="rest_code_2d04eaf3ec144845844d04da8daee892-12"&gt;&lt;/a&gt;&lt;span class="n"&gt;enumerate_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="zip-function"&gt;
+&lt;h2&gt;7. Zip function&lt;/h2&gt;
+&lt;p&gt;Another helpful function for "zipping" the items from different list together. The items at the index of the different list to be zipped will
+be together.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;zip_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-2"&gt;&lt;/a&gt;  &lt;span class="n"&gt;names&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;"Jane"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"Henry"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"Tom"&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-3"&gt;&lt;/a&gt;  &lt;span class="n"&gt;ages&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;30&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-4"&gt;&lt;/a&gt;  &lt;span class="n"&gt;fav_color&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;"green"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"blue"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"red"&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-5"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-6"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Without Zip&lt;/span&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-7"&gt;&lt;/a&gt;  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;names&lt;/span&gt;&lt;span class="p"&gt;)):&lt;/span&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-8"&gt;&lt;/a&gt;    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;names&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;ages&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;fav_color&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-9"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-10"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-11"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-12"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# With Zip&lt;/span&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-13"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;zip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;names&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ages&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fav_color&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-14"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-15"&gt;&lt;/a&gt;  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;color&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;zip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;names&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ages&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fav_color&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-16"&gt;&lt;/a&gt;    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;color&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-17"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e14991e09572429b8f6c73f181183d44-18"&gt;&lt;/a&gt;&lt;span class="n"&gt;zip_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="show-built-in-help"&gt;
+&lt;h2&gt;8. Show built in help&lt;/h2&gt;
+&lt;p&gt;This is particularly useful when you want to read the help from the command line.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_b02e1117499f435099a64db98105c287-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;help_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_b02e1117499f435099a64db98105c287-2"&gt;&lt;/a&gt;  &lt;span class="n"&gt;help&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;list&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_b02e1117499f435099a64db98105c287-3"&gt;&lt;/a&gt;
+&lt;a name="rest_code_b02e1117499f435099a64db98105c287-4"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Even help on modules&lt;/span&gt;
+&lt;a name="rest_code_b02e1117499f435099a64db98105c287-5"&gt;&lt;/a&gt;  &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;
+&lt;a name="rest_code_b02e1117499f435099a64db98105c287-6"&gt;&lt;/a&gt;  &lt;span class="n"&gt;help&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_b02e1117499f435099a64db98105c287-7"&gt;&lt;/a&gt;
+&lt;a name="rest_code_b02e1117499f435099a64db98105c287-8"&gt;&lt;/a&gt;&lt;span class="n"&gt;help_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="print-object-attributes"&gt;
+&lt;h2&gt;9. Print object attributes&lt;/h2&gt;
+&lt;p&gt;To get the object attributes, you can use dir() function.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_18f89dc625d34888ba3fed211f39955f-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;dir_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_18f89dc625d34888ba3fed211f39955f-2"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;""&lt;/span&gt;
+&lt;a name="rest_code_18f89dc625d34888ba3fed211f39955f-3"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Print attribute of x&lt;/span&gt;
+&lt;a name="rest_code_18f89dc625d34888ba3fed211f39955f-4"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;dir&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;a name="rest_code_18f89dc625d34888ba3fed211f39955f-5"&gt;&lt;/a&gt;
+&lt;a name="rest_code_18f89dc625d34888ba3fed211f39955f-6"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Print constant integer literal attribute&lt;/span&gt;
+&lt;a name="rest_code_18f89dc625d34888ba3fed211f39955f-7"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;dir&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;a name="rest_code_18f89dc625d34888ba3fed211f39955f-8"&gt;&lt;/a&gt;
+&lt;a name="rest_code_18f89dc625d34888ba3fed211f39955f-9"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Even works on modules&lt;/span&gt;
+&lt;a name="rest_code_18f89dc625d34888ba3fed211f39955f-10"&gt;&lt;/a&gt;  &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;queue&lt;/span&gt;
+&lt;a name="rest_code_18f89dc625d34888ba3fed211f39955f-11"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;dir&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Queue&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;a name="rest_code_18f89dc625d34888ba3fed211f39955f-12"&gt;&lt;/a&gt;
+&lt;a name="rest_code_18f89dc625d34888ba3fed211f39955f-13"&gt;&lt;/a&gt;&lt;span class="n"&gt;dir_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="list-comprehension"&gt;
+&lt;h2&gt;10. List comprehension&lt;/h2&gt;
+&lt;p&gt;This syntax is just Python's way of writing for inside of a list. The result will be a list object from the resulting for loop execution.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;list_comprehension_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-2"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Normal list comprehension&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-3"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-4"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-5"&gt;&lt;/a&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-6"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# List comprehension with conditions&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-7"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-8"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-9"&gt;&lt;/a&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-10"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# List comprehension with other initializers (empty list)&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-11"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[[]&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-12"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-13"&gt;&lt;/a&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-14"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Nested list comprehension&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-15"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-16"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-17"&gt;&lt;/a&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-18"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Using zip&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-19"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;zip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;))]&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-20"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-21"&gt;&lt;/a&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-22"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;zip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;))]&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-23"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-24"&gt;&lt;/a&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-25"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;zip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;))]&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-26"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-27"&gt;&lt;/a&gt;
+&lt;a name="rest_code_1bfb0ff12fb54818b0e7e3045ea452d9-28"&gt;&lt;/a&gt;&lt;span class="n"&gt;list_comprehension_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="unnamed-variable"&gt;
+&lt;h2&gt;11. Unnamed variable&lt;/h2&gt;
+&lt;p&gt;Sometimes a variable need not be created because it might not be used, hence you can use _ as the name of variable to define it as
+unused/unnamed.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_7579258a06214dcaab8702e081a3cbc2-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;unnamed_var_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_7579258a06214dcaab8702e081a3cbc2-2"&gt;&lt;/a&gt;  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;_&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;a name="rest_code_7579258a06214dcaab8702e081a3cbc2-3"&gt;&lt;/a&gt;    &lt;span class="c1"&gt;# Not able to use _ here&lt;/span&gt;
+&lt;a name="rest_code_7579258a06214dcaab8702e081a3cbc2-4"&gt;&lt;/a&gt;    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"hello world"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_7579258a06214dcaab8702e081a3cbc2-5"&gt;&lt;/a&gt;
+&lt;a name="rest_code_7579258a06214dcaab8702e081a3cbc2-6"&gt;&lt;/a&gt;&lt;span class="n"&gt;unnamed_var_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="string-join-function"&gt;
+&lt;h2&gt;12. String join function&lt;/h2&gt;
+&lt;p&gt;This will join the strings together.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_102ec0e956ea4bbdb8667a8d882a18ac-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;join_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_102ec0e956ea4bbdb8667a8d882a18ac-2"&gt;&lt;/a&gt;  &lt;span class="n"&gt;words&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;"hello"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"world"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"My"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"name"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"is"&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;a name="rest_code_102ec0e956ea4bbdb8667a8d882a18ac-3"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Join all words&lt;/span&gt;
+&lt;a name="rest_code_102ec0e956ea4bbdb8667a8d882a18ac-4"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;""&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;a name="rest_code_102ec0e956ea4bbdb8667a8d882a18ac-5"&gt;&lt;/a&gt;
+&lt;a name="rest_code_102ec0e956ea4bbdb8667a8d882a18ac-6"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Join all words with space separated&lt;/span&gt;
+&lt;a name="rest_code_102ec0e956ea4bbdb8667a8d882a18ac-7"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;" "&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;a name="rest_code_102ec0e956ea4bbdb8667a8d882a18ac-8"&gt;&lt;/a&gt;
+&lt;a name="rest_code_102ec0e956ea4bbdb8667a8d882a18ac-9"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Join all words with comma separated&lt;/span&gt;
+&lt;a name="rest_code_102ec0e956ea4bbdb8667a8d882a18ac-10"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;","&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;a name="rest_code_102ec0e956ea4bbdb8667a8d882a18ac-11"&gt;&lt;/a&gt;
+&lt;a name="rest_code_102ec0e956ea4bbdb8667a8d882a18ac-12"&gt;&lt;/a&gt;&lt;span class="n"&gt;join_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="reverse-a-string"&gt;
+&lt;h2&gt;13. Reverse a string&lt;/h2&gt;
+&lt;p&gt;Sometimes, you might need to reverse a string, note this method will create a new string copy and not in place.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_059ce25c5e504971a25a2670639ec568-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;reverse_str_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_059ce25c5e504971a25a2670639ec568-2"&gt;&lt;/a&gt;  &lt;span class="n"&gt;st&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"hello"&lt;/span&gt;
+&lt;a name="rest_code_059ce25c5e504971a25a2670639ec568-3"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# New copy of string is returned, not in place&lt;/span&gt;
+&lt;a name="rest_code_059ce25c5e504971a25a2670639ec568-4"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;st&lt;/span&gt;&lt;span class="p"&gt;[::&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;a name="rest_code_059ce25c5e504971a25a2670639ec568-5"&gt;&lt;/a&gt;
+&lt;a name="rest_code_059ce25c5e504971a25a2670639ec568-6"&gt;&lt;/a&gt;&lt;span class="n"&gt;reverse_str_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="sizeof-in-python"&gt;
+&lt;h2&gt;14. sizeof in Python&lt;/h2&gt;
+&lt;p&gt;Sometimes you need to check the size of an object, just import sys and do a getsizeof().&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_f2297987d85b4935bca1cc15d1282b0a-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_bytes_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_f2297987d85b4935bca1cc15d1282b0a-2"&gt;&lt;/a&gt;  &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;
+&lt;a name="rest_code_f2297987d85b4935bca1cc15d1282b0a-3"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;
+&lt;a name="rest_code_f2297987d85b4935bca1cc15d1282b0a-4"&gt;&lt;/a&gt;
+&lt;a name="rest_code_f2297987d85b4935bca1cc15d1282b0a-5"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Get size of object&lt;/span&gt;
+&lt;a name="rest_code_f2297987d85b4935bca1cc15d1282b0a-6"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getsizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;a name="rest_code_f2297987d85b4935bca1cc15d1282b0a-7"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;getsizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"hello"&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;a name="rest_code_f2297987d85b4935bca1cc15d1282b0a-8"&gt;&lt;/a&gt;
+&lt;a name="rest_code_f2297987d85b4935bca1cc15d1282b0a-9"&gt;&lt;/a&gt;&lt;span class="n"&gt;get_bytes_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="get-most-freq-in-list-using-key"&gt;
+&lt;h2&gt;15. Get most freq in list using key&lt;/h2&gt;
+&lt;p&gt;Sometimes you want to get an item in the list, you can make use of the key in max.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_49399877b964424b942d0063dffd9004-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_most_freq_in_list&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_49399877b964424b942d0063dffd9004-2"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;a name="rest_code_49399877b964424b942d0063dffd9004-3"&gt;&lt;/a&gt;
+&lt;a name="rest_code_49399877b964424b942d0063dffd9004-4"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# x.count is a iterator function that takes in a param to check the count of items in x&lt;/span&gt;
+&lt;a name="rest_code_49399877b964424b942d0063dffd9004-5"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# When passed into key, it will check which item in the set is biggest based on the count of items&lt;/span&gt;
+&lt;a name="rest_code_49399877b964424b942d0063dffd9004-6"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;max&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;a name="rest_code_49399877b964424b942d0063dffd9004-7"&gt;&lt;/a&gt;
+&lt;a name="rest_code_49399877b964424b942d0063dffd9004-8"&gt;&lt;/a&gt;&lt;span class="n"&gt;get_most_freq_in_list&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="lambda-function"&gt;
+&lt;h2&gt;16. Lambda function&lt;/h2&gt;
+&lt;p&gt;Lambda or unnamed function can be written in python with the lambda keyword.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_ab424bd6289440008fd803f1ce53a200-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;lambda_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_ab424bd6289440008fd803f1ce53a200-2"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+&lt;a name="rest_code_ab424bd6289440008fd803f1ce53a200-3"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;max&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]))&lt;/span&gt;
+&lt;a name="rest_code_ab424bd6289440008fd803f1ce53a200-4"&gt;&lt;/a&gt;
+&lt;a name="rest_code_ab424bd6289440008fd803f1ce53a200-5"&gt;&lt;/a&gt;&lt;span class="n"&gt;lambda_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="xkcd-comic-anti-gravity"&gt;
+&lt;h2&gt;17. XKCD Comic (Anti gravity)&lt;/h2&gt;
+&lt;p&gt;This is for fun, it will show a comic from XKCD.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_b10cc385c0e34c67a1eff20f244e05eb-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;anti_gravity_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_b10cc385c0e34c67a1eff20f244e05eb-2"&gt;&lt;/a&gt;  &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;antigravity&lt;/span&gt;
+&lt;a name="rest_code_b10cc385c0e34c67a1eff20f244e05eb-3"&gt;&lt;/a&gt;
+&lt;a name="rest_code_b10cc385c0e34c67a1eff20f244e05eb-4"&gt;&lt;/a&gt;&lt;span class="n"&gt;anti_gravity_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="string-multiplication"&gt;
+&lt;h2&gt;18. String multiplication&lt;/h2&gt;
+&lt;p&gt;Did you know, you can actually multiply string by an integer, the result is just the string repeated that many times.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_bc7b889939c54bd7bcc04599f0841444-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;string_multiplication_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_bc7b889939c54bd7bcc04599f0841444-2"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Print hellohellohello....&lt;/span&gt;
+&lt;a name="rest_code_bc7b889939c54bd7bcc04599f0841444-3"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"hello "&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_bc7b889939c54bd7bcc04599f0841444-4"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Print hellohello....hehe&lt;/span&gt;
+&lt;a name="rest_code_bc7b889939c54bd7bcc04599f0841444-5"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"hello "&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;"he "&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_bc7b889939c54bd7bcc04599f0841444-6"&gt;&lt;/a&gt;
+&lt;a name="rest_code_bc7b889939c54bd7bcc04599f0841444-7"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Works with fstring as well&lt;/span&gt;
+&lt;a name="rest_code_bc7b889939c54bd7bcc04599f0841444-8"&gt;&lt;/a&gt;  &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"Kent"&lt;/span&gt;
+&lt;a name="rest_code_bc7b889939c54bd7bcc04599f0841444-9"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_bc7b889939c54bd7bcc04599f0841444-10"&gt;&lt;/a&gt;
+&lt;a name="rest_code_bc7b889939c54bd7bcc04599f0841444-11"&gt;&lt;/a&gt;&lt;span class="n"&gt;string_multiplication_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="splat-and-unpack"&gt;
+&lt;h2&gt;19. Splat and unpack&lt;/h2&gt;
+&lt;p&gt;This is useful for variable args as well as with kwargs functions.&lt;/p&gt;
+&lt;pre class="code python"&gt;&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-1"&gt;&lt;/a&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;splat_and_unpack_fn&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-2"&gt;&lt;/a&gt;  &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-3"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Unpack x to become 1 2 3 4 5&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-4"&gt;&lt;/a&gt;  &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-5"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-6"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Use on any amount of arguments&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-7"&gt;&lt;/a&gt;  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;arg_fn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-8"&gt;&lt;/a&gt;    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-9"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-10"&gt;&lt;/a&gt;  &lt;span class="n"&gt;arg_fn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-11"&gt;&lt;/a&gt;  &lt;span class="n"&gt;arg_fn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-12"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-13"&gt;&lt;/a&gt;  &lt;span class="c1"&gt;# Use on dict as wells&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-14"&gt;&lt;/a&gt;  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;dict_fn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-15"&gt;&lt;/a&gt;    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-16"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-17"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-18"&gt;&lt;/a&gt;  &lt;span class="n"&gt;dict_fn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-19"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-20"&gt;&lt;/a&gt;  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;arg_dict_fn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-21"&gt;&lt;/a&gt;    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-22"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-23"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-24"&gt;&lt;/a&gt;  &lt;span class="n"&gt;arg_dict_fn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;"aa"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"aa"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-25"&gt;&lt;/a&gt;
+&lt;a name="rest_code_e04763fca0484780a4413f0cd59ba91b-26"&gt;&lt;/a&gt;&lt;span class="n"&gt;splat_and_unpack_fn&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="conclusion"&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;Hopefully, this small list of python snippets is useful for you. Hopefully you learn something new today.&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;</description><guid>https://0xfe11.github.io/posts/today-i-learn-some-python-tips/</guid><pubDate>Sun, 26 Jul 2020 14:37:00 GMT</pubDate></item><item><title>Setting up powerline on FreeBSD</title><link>https://0xfe11.github.io/posts/setting-up-powerline-on-freebsd/</link><dc:creator>0xfe11</dc:creator><description>&lt;div&gt;&lt;p&gt;Earlier in the week, I got my Windows machine with the Powerline prompt working and I thought it
+would be a fun exercise to get the same on my FreeBSD machine. After messing around for a few hours,
+I finally got it to work. Here are the steps that I took to set it up.&lt;/p&gt;
+&lt;div class="section" id="installation-of-packages"&gt;
+&lt;h2&gt;1. Installation of packages&lt;/h2&gt;
+&lt;p&gt;Install the following packages as root,&lt;/p&gt;
+&lt;pre class="code sh"&gt;&lt;a name="rest_code_ddb7d1e3f7cf416a97b535d270e09426-1"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# pkg install powerline-fonts&lt;/span&gt;
+&lt;a name="rest_code_ddb7d1e3f7cf416a97b535d270e09426-2"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# pkg install py37-powerline-status&lt;/span&gt;
+&lt;/pre&gt;&lt;p&gt;The powerline-fonts package contains patched fonts for special symbols that are not found in the
+regular fonts.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="start-powerline-at-start"&gt;
+&lt;h2&gt;2. Start powerline at start&lt;/h2&gt;
+&lt;p&gt;Add the following line to your shell's rc file, for my case, I am using zsh and so I add the
+following line to my zshrc file.&lt;/p&gt;
+&lt;pre class="code sh"&gt;&lt;a name="rest_code_d1aea6943bb042fe803a2bf13d7d572a-1"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# rc file&lt;/span&gt;
+&lt;a name="rest_code_d1aea6943bb042fe803a2bf13d7d572a-2"&gt;&lt;/a&gt;. /usr/local/lib/python3.7/site-packages/powerline/bindings/zsh/powerline.zsh
+&lt;/pre&gt;&lt;p&gt;This will invoke powerline when you open the terminal.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="getting-patched-font-to-use"&gt;
+&lt;h2&gt;3. Getting patched font to use&lt;/h2&gt;
+&lt;p&gt;You might need to consult your manual related to the specific terminal you are using.
+Firstly, the get the name of the patched fonts to use, you can do the following command,&lt;/p&gt;
+&lt;pre class="code sh"&gt;&lt;a name="rest_code_338ae558fcdd40fda78cda49c60d13dc-1"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# Get all fonts registered that are in powerline patched folders&lt;/span&gt;
+&lt;a name="rest_code_338ae558fcdd40fda78cda49c60d13dc-2"&gt;&lt;/a&gt;$ fc-list &lt;span class="p"&gt;|&lt;/span&gt; grep powerline
+&lt;/pre&gt;&lt;p&gt;I like the Hack-Regular patched font so I am going to go with that.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="set-up-your-terminal-to-use-patched-fonts"&gt;
+&lt;h2&gt;4. Set up your terminal to use patched fonts&lt;/h2&gt;
+&lt;p&gt;Personally, I am using xterm so this is what I have added to my .Xresources.&lt;/p&gt;
+&lt;pre class="code sh"&gt;&lt;a name="rest_code_a361cddce9144cb5bc5987589f2f2c92-1"&gt;&lt;/a&gt;&lt;span class="c1"&gt;# .Xresources file&lt;/span&gt;
+&lt;a name="rest_code_a361cddce9144cb5bc5987589f2f2c92-2"&gt;&lt;/a&gt;XTerm*faceName: Hack-Regular
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="use-unicode-for-your-freebsd"&gt;
+&lt;h2&gt;5. Use Unicode for your FreeBSD&lt;/h2&gt;
+&lt;p&gt;Before I came upon this step, I was having issue with the fonts in my terminal. As it turned out,
+after this step, my terminal is showing the powerline fonts properly.&lt;/p&gt;
+&lt;p&gt;If this file .login_conf do not exist on your home directory, have it created and add the
+following based on your locale.&lt;/p&gt;
+&lt;p&gt;To check all of your available locale, you can do the following.&lt;/p&gt;
+&lt;pre class="code sh"&gt;&lt;a name="rest_code_c111b26b603249c5ba83177fcefdc63e-1"&gt;&lt;/a&gt;locale -a &lt;span class="p"&gt;|&lt;/span&gt; more
+&lt;/pre&gt;&lt;p&gt;Make sure to pick something that have UTF-8 support, for my case I will be going with en_US.UTF-8.
+Set the lang accordingly to what you have picked.&lt;/p&gt;
+&lt;pre class="code text"&gt;&lt;a name="rest_code_eaa6ab6de95b40339c6c0208acc5b89c-1"&gt;&lt;/a&gt;me:\
+&lt;a name="rest_code_eaa6ab6de95b40339c6c0208acc5b89c-2"&gt;&lt;/a&gt; :charset=UTF-8:\
+&lt;a name="rest_code_eaa6ab6de95b40339c6c0208acc5b89c-3"&gt;&lt;/a&gt; :lang=en_US.UTF-8:
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="section" id="done"&gt;
+&lt;h2&gt;Done&lt;/h2&gt;
+&lt;p&gt;Now save the file. You are ready to try the powerline. Make sure to logout and login back to try
+if the .login_conf is correctly loaded as well as your shell's rc file is loaded properly. Here is
+a screenshot of my powerline in my FreeBSD's xterm.&lt;/p&gt;
+&lt;img alt="/images/setting-up-powerline-on-freebsd_0.png" src="https://0xfe11.github.io/images/setting-up-powerline-on-freebsd_0.png"&gt;
+&lt;/div&gt;&lt;/div&gt;</description><guid>https://0xfe11.github.io/posts/setting-up-powerline-on-freebsd/</guid><pubDate>Sat, 25 Jul 2020 07:53:04 GMT</pubDate></item></channel></rss>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="My general thoughts on game dev and coding">
+<meta name="viewport" content="width=device-width">
+<title>127.0.0.1 (old posts, page 3) | 127.0.0.1</title>
+<link href="assets/css/baguetteBox.min.css" rel="stylesheet" type="text/css">
+<link href="assets/css/rst_base.css" rel="stylesheet" type="text/css">
+<link href="assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
+<link href="assets/css/code.css" rel="stylesheet" type="text/css">
+<link href="assets/css/theme.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<link href="assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="rss.xml">
+<link rel="canonical" href="https://0xfe11.github.io/index-3.html">
+<link rel="prev" href="index-4.html" type="text/html">
+<link rel="next" href="index-2.html" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]-->
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+         
+    <header id="header"><h1 id="brand"><a href="https://0xfe11.github.io/" title="127.0.0.1" rel="home">
+
+        <span id="blog-title">127.0.0.1</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="pages/about/index.html">About</a></li>
+                <li><a href="index.html">Blog</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/porting-space-invaders-clone-from-c%2B%2B-to-d/" class="u-url">Porting Space Invaders clone from C++ to D</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/porting-space-invaders-clone-from-c%2B%2B-to-d/" rel="bookmark">
+            <time class="published dt-published" datetime="2018-07-23T16:42:55+08:00" itemprop="datePublished" title="23 Jul 2018">23 Jul 2018</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>Few weeks ago, I came across a series of <a class="reference external" href="http://nicktasios.nl/posts/space-invaders-from-scratch-part-1.html">blog</a> posts by Nick Tasios. In that post, he wrote a simple Space Invaders with OpenGL and GLFW.
+I thought it was a good exercise for myself to port it into D. and it was a good opportunity to get <a class="reference external" href="https://derelictorg.github.io/">Derelict</a> to work.</p>
+<p>Previously I had tried to set it up,
+but the lack of documentation and examples got to me. This time round, I am determined to get it to work and port Space Invaders to D. Just for the fun of it.</p>
+<p>Setting up Derelict-GLFW turned out to be easier than imagined. Turned out, I didn't include the dlls for the GLFW for it to work properly the other time.
+I also managed to find some code to initialize the GLFW as well as getting it to run.</p>
+<p>Once I got GLFW to run, the rest was porting the code from the tutorial to D. I kept the looks and feel similar of the original tutorial. Overall, building a simple game like
+Space Invaders is a good exercise to learn about D. Anyhow, I have finished porting the tutorial from 1 to 5, however in the near future, I hope to refactor the code somemore
+to make it more beginner friendly.</p>
+<p>You can check out my code <a class="reference external" href="https://github.com/zgoh/d_space_invaders">here</a>.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/how-to-post-your-blog-on-gitlab/" class="u-url">How to post your blog on GitLab?</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/how-to-post-your-blog-on-gitlab/" rel="bookmark">
+            <time class="published dt-published" datetime="2018-06-06T21:51:26+08:00" itemprop="datePublished" title="06 Jun 2018">06 Jun 2018</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>So you have heard the news that GitHub is going to be <a class="reference external" href="https://news.microsoft.com/2018/06/04/microsoft-to-acquire-github-for-7-5-billion/">bought</a> over by Microsoft for 7.5 Billion. Yes that's right. Lots of people are switching to alternatives, in fear of Microsoft ruining the party. Honestly I think that new Microsoft has done a lot in the open source space. I mean, just looking at the amount of projects that Microsoft have opened source over the past few years. I think that this recent acquisition is not a bad thing after all.</p>
+<p>Maybe you are like me, you only hosted your website on GitHub and now that the acquisition has occurred, you thought about hosting your webpage on other hosting as well. And it just so happened that you realized that GitLab supports hosting pages as well. The reason I use GitLab is to host my private repositories, I didn't really use its other feature. Now that the deal is done, I thought it would be interesting to evaluate the different hosting website as well.</p>
+<p>Without further ado, let me guide you through the process of hosting the website on GitLab.</p>
+<div class="section" id="create-a-new-project">
+<h2>1. Create a new project</h2>
+<p>When creating the project, there are a few options, but for my case I named the project as USERNAME.gitlab.io which is similar to how to create my blog in GitHub.</p>
+</div>
+<div class="section" id="commit-the-blog-to-gitlab">
+<h2>2. Commit the blog to GitLab</h2>
+<p>This step is different to creating a page for GitHub because, for GitHub, I would just commit the html/css (generated by the static generators) to the repository. However for GitLab, it is a little different as the pages are generated by GitLab using their CI/CD tool. Therefore for the GitLab repository, I committed my whole blog, meaning to say in GitHub, I would commit my blog skeleton files in one repository and the static generated output pages onto my USERNAME.github.io project, however for GitLab, I committed my skeleton onto my USERNAME.gitlab.io repository and have a CI/CD file that GitLab will run and build my page from.</p>
+<p>This is useful in GitLab because I would not need to maintain two repositories. Also in the last post, I talked about how I pushed my blog to GitHub. For the case of GitLab, I would just commit the posts that I want and let the CI/CD tool handle the pushing of the webpage for me.</p>
+</div>
+<div class="section" id="set-up-ci-cd">
+<h2>3. Set up CI/CD</h2>
+<p>Go to GitLab's project page and click on Set up CI/CD, here GitLab have a few templates that you can choose from. Depending on the static generators used. There are templates for popular static generators like Jekyll, Hugo, Hexo. As for myself, I am using Nikola, thankfully there is a <a class="reference external" href="https://gitlab.com/pages">sample page</a> where you can clone from and learn how they host.</p>
+<p>I am currently using Nikola and there is certain things to take note. Firstly, when running Nikola build (to generate the webpage), it will output to a folder named output. GitLab's pages however requires the generated output to be in this <em>public</em> folder. Hence, we can either set the output folder to public in the config.py file. Personally for me, I want to keep it as output.</p>
+<p>Therefore what I did was to edit the CI/CD file to have additional steps to move from the output to the public folder. I found out about this from the <a class="reference external" href="https://gitlab.com/pages/nikola#troubleshooting">troubleshooting</a> section of the sample Nikola page.</p>
+</div>
+<div class="section" id="wait-for-ci-cd-to-complete-the-job">
+<h2>4. Wait for CI/CD to complete the job</h2>
+<p>After all the things have been done, you now wait for the CI/CD task to complete and make sure that all jobs passed. When it all passed, head over to settings &gt; page and you will see a link below. It should say something like USERNAME.gitlab.io</p>
+<p>Happy blogging.</p>
+</div></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/how-to-use-git-amend-to-push-your-blog/" class="u-url">How to use git amend to push your blog?</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/how-to-use-git-amend-to-push-your-blog/" rel="bookmark">
+            <time class="published dt-published" datetime="2018-06-04T23:13:03+08:00" itemprop="datePublished" title="04 Jun 2018">04 Jun 2018</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>Recently I learned something new with Git. Yes, it's the amend option that you can append to your commit. What it does is roughly (from the Git docs).</p>
+<pre class="code shell"><a name="rest_code_33f6a23bc409425489bc0da2a43b37f9-1"></a>$ git reset --soft HEAD^
+<a name="rest_code_33f6a23bc409425489bc0da2a43b37f9-2"></a>$ ... <span class="k">do</span> something <span class="k">else</span> to come up with the right tree ...
+<a name="rest_code_33f6a23bc409425489bc0da2a43b37f9-3"></a>$ git commit -c ORIG_HEAD
+</pre><p>So apparently, at my company, whenever we commit our code, we will submit our own branch and create a pull request (pr) from it. And when there is any changes, we will edit our code and amend our commit. This way it looks as if we only committed once.</p>
+<p>Likewise, I also do it on my blog. What I did in the past was stage and commit everything and push. This resulted in many commits, whenever I wanted to add a new blog posts. Ater I have learnt about amend, I will just amend my repository for my blog and do a force push to the origin so that, on the Github website, I will only see one commit.</p>
+<p>I hope you enjoy this tip.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/so-far-in-2018/" class="u-url">So far in 2018</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/so-far-in-2018/" rel="bookmark">
+            <time class="published dt-published" datetime="2018-06-04T22:16:24+08:00" itemprop="datePublished" title="04 Jun 2018">04 Jun 2018</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><dl class="simple">
+<dt>In the beginning of the year, I said that I wanted to do the following,</dt>
+<dd><ul class="simple">
+<li><p>Be proficient in Linux, switch to using Linux full time.</p></li>
+<li><p>Learn and write some programs in Rust</p></li>
+<li><p>At least one post per month for this blog.</p></li>
+<li><p>Learn at least 3 new language this year (Rust/Go/Pascal/Dart/Red)</p></li>
+<li><p>Develop a cross platform mobile app of any sort.</p></li>
+<li><p>Join a game jam</p></li>
+<li><p>Learn Vim properly</p></li>
+</ul>
+</dd>
+<dt>Out of all of them, I have</dt>
+<dd><ul class="simple">
+<li><p>Using Linux full time (Installed Manjaro on my Lenovo W500) for development.</p></li>
+<li><p>Learning D lang, going to start learning Nim as well.</p></li>
+<li><p>Hopefully, with the new blog, it will have less friction for me to write more posts.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Firstly, I think it is rather interesting that I first discover Linux when I was 15 years old or so, my first experience was running a Knoppix which I got it off the net. It was my first time running an Operating System (OS) from a disc. From then on, I really admire the work people put into the respective distro. From then, I move on to Ubuntu and I even used Slackware for a time. I really enjoy using Linux and I hope to explore other open source OS in the near future.</p>
+<p>Next, I would like to talk about the language learnt. It is rather interesting that the language that I decided to learn is not on the list that I propose earlier on. I have come across D for a few times now, but I think recently I saw that there is a DConf 2018 and I thought it would be interesting to pick up D lang as well. Why I went with D instead of Rust/Go was because I wanted something that was closer to C++ and also there is a free <a class="reference external" href="http://ddili.org/ders/d.en/index.html">book</a> that teaches D. At that point, I also wanted to learn more about sockets programming. I went online to see what kind of projects are interesting to build and I came across <a class="reference external" href="https://www.codementor.io/npostolovski/40-side-project-ideas-for-software-engineers-g8xckyxef">this blog</a> that list FTP client as on of the software to build. I immediately took up the challenge and proceeded to write my <a class="reference external" href="https://github.com/zgoh/ftp_client">own client</a> in D, using sockets.</p>
+<p>Meanwhile also check out my <a class="reference external" href="https://github.com/zgoh/simple-d-echo-program">simple</a> echo server/client that I wrote in D.</p>
+<p>For the next project, I would love to try out Nim as well. Stay tuned for more projects. I think it's rather interesting that the goals that I have set for myself. I will continue to work towards it.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/trying-out-nikola/" class="u-url">Trying out Nikola</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/trying-out-nikola/" rel="bookmark">
+            <time class="published dt-published" datetime="2018-05-16T22:01:36+08:00" itemprop="datePublished" title="16 May 2018">16 May 2018</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>This is my first post on my experience with using <a class="reference external" href="https://getnikola.com/">Nikola</a>. I have been thinking
+about migrating my current blog from <a class="reference external" href="https://jekyllrb.com/">Jekyll</a> to something <a class="reference external" href="http://python.org/">Python</a> based. This is because I am more familiar with python than Ruby. Since my internship last year, I have been exposed to <a class="reference external" href="http://python.org/">Python</a> and I really like it.</p>
+<dl class="simple">
+<dt>As for static site generators, I have come across the following,</dt>
+<dd><ul class="simple">
+<li><p>Pelican (Most starred python static gen)</p></li>
+<li><p>Lektor (Have heard before)</p></li>
+<li><p>Nikola (New, I think)</p></li>
+</ul>
+</dd>
+</dl>
+<p>I tried Pelican but I found it lacking in terms of documentations and tools. The build scripts are also rather weird. Pelican uses a makefile to build the site and serve, which makes it harder for me to use on a Windows machine.</p>
+<p>Also I wanted to give Lektor a try as well but I ended up going with Nikola instead. I really love the simplicity of the build/serve tool. Also installing theme/plugin is easy. The only trouble I had was running a Jekyll to Nikola post migration tool. Nevertheless, I manually ported my posts, which are in the 20s.</p>
+<p>And I really love the fact that it supports multiple templating engine as well as markdown and restructured text for writing posts. After I finished porting, I came to appreciate the elegance of restructured text. It can be confusing at first. Thankfully, I found this <a class="reference external" href="https://github.com/ralsina/rst-cheatsheet/blob/master/rst-cheatsheet.rst#id17">cheatsheet</a> which teaches me all the fundamental stuff I need to port my posts.</p>
+<p>There is one nice feature that I like that Nikola offers, which is reloading of my browser whenever the page has changed. I think this is a rather neat feature where the pages will just hot reload rather than having to reload manually.</p>
+<p>For this blog, I am currently using the <a class="reference external" href="https://themes.getnikola.com/v7/hack/">Hack</a> theme hosted at <a class="reference external" href="https://themes.getnikola.com/">Nikola Theme</a>.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/everyone-should-participate-in-code-review/" class="u-url">Everyone should participate in code review</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/everyone-should-participate-in-code-review/" rel="bookmark">
+            <time class="published dt-published" datetime="2018-04-17T17:37:08+08:00" itemprop="datePublished" title="17 Apr 2018">17 Apr 2018</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>Hi everyone, this is another one of the rants that I have at my workplace. Currently I am interning at a software company and I get to participate in
+developing the company's software. At our company, the workflow is usually this, someone will create a ticket on our Jira and it will be assigned to
+an engineer to work on. When an engineer finished implementing the code, they will push it into their own forks of code into git and submit a pull request
+to merge into the mainline.</p>
+<p>Wait a minute there, I said submit a pull request. Yes, so when we submit a pull request, we have to have at least 1 engineer do a code review before we
+are allowed to merge into the mainline. Whenever a junior engineer or an intern like me commit any change and submit a pull request, we have to let our
+team lead do a code review. This is nice and all to prevent us from accidentally committing bad code (that do not follow guidelines) into the main line.</p>
+<p>The thing that have been bugging me is this, junior engineers have to be code reviewed but what about the team lead themselves? Do they get code reviews?
+Even if they do, I feel like as a junior engineer or intern (like me) can also play a part in the code review process. We can pose questions as to why the
+lead made certain decisions. The way I see it, the junior engineers commit takes a long time because it is always under review until we resolve whatever issues
+it is the reviewer have with the code, while the leads themselves can commit anytime they want. I believe everyone should go through code reviews whether they are
+junior, senior or even the leads themselves.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/state-of-the-build-1/" class="u-url">State of the Build 1</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/state-of-the-build-1/" rel="bookmark">
+            <time class="published dt-published" datetime="2018-04-14T11:23:45+08:00" itemprop="datePublished" title="14 Apr 2018">14 Apr 2018</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>Build system is on the of most important tool for building softwares. In the past, I have always taken these tool for granted. Coming
+from a Visual Studio and Windows background, I must say that I have no idea how important a build system is. On Visual Studio, one just set
+up the project and it will build as long as the project matches the IDE version. This can be quite useful when you want to setup the
+project and immediately jump into building the project.</p>
+<p>Though all this sounds good, it can be quite a pain especially if using an older version of Visual Studio with a newer version of the project. Another
+pain point would be using the same project in a linux environment. This can be quite annoying if your project only supports Windows. Hence my quest to
+find a good build system for my projects. Note: Currently I am only using C++ for my projects, other language may have their own fancy build systems.</p>
+<p>My requirements for a build system is simple and must fulfill the following,
+1. Be cross platform (thinking of building some cross platform fanciful app).
+2. Easy to learn, DUH
+3. Fast, DUH</p>
+<p>Currently I have chosen to test <a class="reference external" href="http://mesonbuild.com/">Meson</a> build system because it is advertised to be fast and easy to learn. Let's see about that. This is part 1 of my
+State of the Build series where I explain my need for a build system. In the next post, I will explore Meson and the good, bad, ugly.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/some-c%2B%2B-rants/" class="u-url">Some C++ Rants</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/some-c%2B%2B-rants/" rel="bookmark">
+            <time class="published dt-published" datetime="2018-04-11T17:56:27+08:00" itemprop="datePublished" title="11 Apr 2018">11 Apr 2018</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>Hello, World! Lately I have been rather busy with work and stuff. I am currently working as an intern in an enterprise software company. It is a relatively small team with only three of us right now.
+As you can imagine, the code base is rather new at about three years I think. Not counting the libraries that we used internally. Any C/C++ codebase that are large enough will be facing these issues, mainly
+build, debugging tools.</p>
+<p>Firstly, my experience with the build tool is not pleasant, the issue I face right now is using an old (and patched version by my company, yes) version of this open watcom build tool. Honestly this is the first
+time I have ever hear of it and the build is so unfriendly and little documentation. Currently the team is currently adding CMake support to the project which will hopefully solve this issue as well as the next issue
+I wanted to talk about, the debugging tool.</p>
+<p>Right now the team is using open watcom to build the project, we do not use Visual Studio to build and debug the project which is something I really miss. Honestly I think Visual Studio
+has some of the better debugging facility around. Also Visual Studio have better code intellisense. Currently I am using VSCode and it just doesn't feel as good as having Visual Studio with me.</p>
+<p>I agree that C/C++ is a powerful language, however to wield such power, one would need to have powerful tool at his disposal and right now, I feel like I am not using the right tool for the job.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/happy-new-year-2018-edition/" class="u-url">Happy New Year 2018 Edition</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/happy-new-year-2018-edition/" rel="bookmark">
+            <time class="published dt-published" datetime="2018-01-01T12:49:49+08:00" itemprop="datePublished" title="01 Jan 2018">01 Jan 2018</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>One year has passed since I started this blog, There are a lot of things that I learn, which I wrote in previous posts. There are much more that I would like to learn in terms of programming.</p>
+<p>This year I would like to try something different. I will list down the things that I would like to achieve.</p>
+<dl class="simple">
+<dt>In no particular order:</dt>
+<dd><ul class="simple">
+<li><p>Be proficient in Linux, switch to using Linux full time.</p></li>
+<li><p>Learn and write some programs in Rust</p></li>
+<li><p>At least one post per month for this blog.</p></li>
+<li><p>Learn at least 3 new language this year (Rust/Go/Pascal/Dart/Red)</p></li>
+<li><p>Develop a cross platform mobile app of any sort.</p></li>
+<li><p>Join a game jam</p></li>
+<li><p>Learn Vim properly</p></li>
+</ul>
+</dd>
+</dl>
+<p>I will keep the list short for now, I will update this list monthly to see if any goals were achieved. Hopefully by the end of the year, I will all of these striked off.</p>
+<p>To kickstart the year, I am currently learning Rust/Object Pascal at the same time. I have not thought about the projects I would like to do with these two projects. Maybe I would develop some sort of patcher/updater tool.</p>
+<p>I am currently writing this blog post in my old Linux box with Vim. Hopefully, I get to do this more often.</p>
+<p>More to come!</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/developing-for-the-web/" class="u-url">Developing for the Web</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/developing-for-the-web/" rel="bookmark">
+            <time class="published dt-published" datetime="2017-12-30T22:50:45+08:00" itemprop="datePublished" title="30 Dec 2017">30 Dec 2017</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>During my few months of internship, one of the few projects that I have worked on is helping to build a web frontend tools for annotators to annotate image and checkers to check if the annotators have labelled these images correctly. For this project, I am exposed to the <a class="reference external" href="https://getbootstrap.com/">Bootstrap</a> and <a class="reference external" href="https://jquery.com/">JQuery</a> framework for the front-end as well as <a class="reference external" href="http://flask.pocoo.org/">Flask</a> for the back-end. I have always disliked developing stuff for the web because I feel that the web is too fast paced.</p>
+<p>Bootstrap and Jquery used to be popular frameworks and is still widely used in some projects. I think it is a good starting point as it allows me to quickly create the whole web feel within a week.</p>
+<p>This is the first time I understand how the web works and how a web server works. Flask is an interesting framework to learn and after learning Flask, I finally got a greater understanding about web servers and what Diango really is. Django is similar but have more functionality.</p>
+<p>Also previously I was exposed to this tool called <a class="reference external" href="https://www.getpostman.com/">Postman</a>, I used something similar called <a class="reference external" href="https://insomnia.rest/">Insomnia</a> to send GET/POST request to the Flask server to test the server's functionality.</p>
+<p>As for the database side, I felt that learning mySQL in my school have really been useful because it was very important when developing apps for the web. Developing a good database is a good way to ensure that the app scales properly. At the work here, I am exposed to mySQL as well as MongoDB which is actually a NoSQL paradigm, which I think have it's uses for large applications.</p></div>
+    </div>
+    --></article>
+</div>
+
+        <nav class="postindexpager"><ul class="pager">
+<li class="previous">
+                <a href="index-4.html" rel="prev">Newer posts</a>
+            </li>
+            <li class="next">
+                <a href="index-2.html" rel="next">Older posts</a>
+            </li>
+        </ul></nav></main><footer id="footer"><div>
+                <a href="https://github.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-github"></i>
+                </a>
+                <a href="https://gitlab.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-gitlab"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/zihegoh" target="blank">
+                    <i class="fab fa-lg fa-linkedin"></i>
+                </a>
+                <a href="/resume.pdf">
+                    <i class="far fa-lg fa-file-pdf"></i>
+                </a>
+                <a href="mailto:zihe.goh@gmail.com">
+                    <i class="fas fa-lg fa-envelope"></i>
+                </a>
+            </div>
+
+            <div>
+                <p>© 2021         <a href="mailto:zihe.goh@gmail.com">0xfe11</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            </div>
+            
+        </footer>
+</div>
+    
+            <script src="assets/js/baguetteBox.min.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

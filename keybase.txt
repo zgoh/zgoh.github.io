@@ -1,0 +1,88 @@
+==================================================================
+https://keybase.io/thepaperbox
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://0xfe11.github.io
+  * I am thepaperbox (https://keybase.io/thepaperbox) on keybase.
+  * I have a public key with fingerprint 948F 7252 C8F5 33FB 670C  7DF9 EF52 A30C 002C DF6A
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0120b4bb3a5a68b2f66505e7e5186247b5c61950ebea100b60f58a87075f5a58bfcf0a",
+      "fingerprint": "948f7252c8f533fb670c7df9ef52a30c002cdf6a",
+      "host": "keybase.io",
+      "key_id": "ef52a30c002cdf6a",
+      "kid": "01016679be946de169fffcd47aac7724f31f9f44692cc96aabfd4dcd305f36cfbf830a",
+      "uid": "7fca4e68abf7b9017b613714efd3e719",
+      "username": "thepaperbox"
+    },
+    "merkle_root": {
+      "ctime": 1555428299,
+      "hash_meta": "b24abe874aca88af0bbcf93321235293944cac66e96d24837951c3d7c6fc8646",
+      "seqno": 5183054
+    },
+    "revoke": {
+      "sig_ids": [
+        "d22ce01db2e12c0e350767f8df4b7851c6c1660999092e5581565f98898a646a0f"
+      ]
+    },
+    "service": {
+      "hostname": "0xfe11.github.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "ctime": 1555428310,
+  "expire_in": 157680000,
+  "prev": "0e504761c6e32b31e413111b095025e7aa21fe955289ee4835421f826e6ba601",
+  "seqno": 30,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v2.1.0
+Comment: https://keybase.io/crypto
+
+yMQJAnicbVN9TFZVGH/B1EBEbW45dU2u9uGGdM6995x7L5apScsZWk4IEPZ6zr3n
+wCvw3pf7Xgi0F1tRasDUTNsUyrBC0RiKhh/NpemY2geYgEJ+hZLLCp0f5OZc55Ku
+tXX+OTvn/J7f83t+z3OOjhzii43qX7g1zpd4YWnUySORYl/23pudyyVqW2VS8nIp
+nw1urMBiYdefH7CkZAlAGVCVUoUggnUqc4wRQExjCOpYVjWKTAwNBBhlBAJAMeBI
+J7oGNMQRQTrlJgdESpR4IJjLnJATCLqC1lB1rslINnWOFIVTrAFTs7jBOJKJAkwA
+ZNPi2AvMs8NehBBHSZglBWxxJw7+QXn/g3+oG0CMNYMyQ8UWg9jgnJuWqhFiapqs
+cgVyg6sqNmTTNDAhlFuqZVoKQFzBJqdcVwZ1Fw/SadwkKsO6gGnUAFCjGCoaVBm3
+FKZBwwOGmRMkhUyg3TwWIiHmULtUiiRKhczJL2B+x7Zdz1/TDXgoiBBSZV02DFEj
+Cef5C5lLRDCVVUKZrqnEJLpOOKDU5IaiyFBWkGwohqqaxMSYGdiSVV3RDARNxdJM
+zE0dq1hICbOioC0lixaJclShwGEldj7zkocDucK5sJS8WLJk2WQAWlRmUDYBUxDQ
+sMZ1i6tU0wUpNoWFwDAMYMgMIR0ijLih64ZORB4CuJQT8ZI5JQFzkNxr1QMLQCln
+ECblBty8YvpP00KO7dqmXSBe81w3FE72vHHLQh78DUb9D4j8NBC0xLCIiBLmhAN2
+UHglkP+1TYEgUWKloYDD/AEPgTSsA7G8PKzEU8AQUDUsymCKTBXIVKhACCkQ0yqL
+CSZEhpwZCMm6wZgwUtBCrsuYYUowgP/6qAhSl+QKTuFekLjFDpMiRw5nP+KLivUN
+Gxrt/SJfbMzoh38runW0r6Gq/OnOZ99dOqb2i/Qfq1P6WnuWzegzNzft3nb8jtub
+cfLxsWvLt9bPixyanfxkR8+Zorv7RqTELXjU2bj9vBXJTHV3vdfSEyqvrT+wM0sv
+TFdufHfRvnZ/nCVVnm1MXdi3+x4ckpZx8odJzx+vnZ/TFeIvrH1xZXxL3/X9O9t8
+a8f6bjVmP/H++JS3GjIShow7PmLWqf6cqUnbO9pocOCn30alZX/waQqPHj6rp+Gj
+ytDZsp60Y3TC6ZdW4G/nXqqANTN931wEF96cvvpSd/+uK21sTsWfO9zXNzx1I6Fh
+avrwj7ds+mVxqMpZcF9pX18HEvxd2yw0r7xraGtB9bY6O+WPHYsGJubczWy82Tqy
+e93Vo20XJw9Y+oTV+wonLxpofHVKyTHy66mYoub8Mas/OXRZGjXZ7z8647Xmmr7S
+rILG+G78zngpd/HuvjNfdcKfn2lUE1KPTOyoqYxtutIcM6Y3aejOzw7E36nrX7Jm
++sz4/TUtn9+uVzr29JRE37yy8HZ92V+zpy3P//JgVm9GzL2uZaHf3z7cPufyuuf2
+vdK6auSHvb64zVEH9k6ruOWsP1eRsWnlMJrWHsk+twZdtwuqIFMCdag8PbO9+cS9
+pv451/Ys0bdM7zw29+X+eenNTe78lrCzd1JRwqqu7rvnp6wo3lX9febp8utXz1W3
+HB4XN/7ExrOpFV/XVh/ccGtHVtFjlX8DIxEOeQ==
+=hJSF
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/thepaperbox
+
+==================================================================

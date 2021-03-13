@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>BeeSeiged Postmortem | 127.0.0.1</title>
+<link href="../../assets/css/baguetteBox.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/rst_base.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/code.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/theme.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<link href="../../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="https://0xfe11.github.io/posts/beeseiged-postmortem/">
+<!--[if lt IE 9]><script src="../../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="0xfe11">
+<link rel="prev" href="../level-creation-workflow/" title="Level creation workflow" type="text/html">
+<link rel="next" href="../happy-new-year/" title="Happy New Year" type="text/html">
+<meta property="og:site_name" content="127.0.0.1">
+<meta property="og:title" content="BeeSeiged Postmortem">
+<meta property="og:url" content="https://0xfe11.github.io/posts/beeseiged-postmortem/">
+<meta property="og:description" content="This is the latest game that I have been working on for my school project (GAM 300). We are supposed to make a 3D game
+from a custom game engine that we build on our own. We had submitted the first pl">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-12-12T14:27:41+08:00">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+         
+    <header id="header"><h1 id="brand"><a href="https://0xfe11.github.io/" title="127.0.0.1" rel="home">
+
+        <span id="blog-title">127.0.0.1</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../../pages/about/index.html">About</a></li>
+                <li><a href="../../index.html">Blog</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">BeeSeiged Postmortem</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="." rel="bookmark">
+            <time class="published dt-published" datetime="2016-12-12T14:27:41+08:00" itemprop="datePublished" title="12 Dec 2016">12 Dec 2016</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>This is the latest game that I have been working on for my school project (GAM 300). We are supposed to make a 3D game
+from a custom game engine that we build on our own. We had submitted the first playable in the engine and now I will talk
+about how it went for this project. This project is my first time building a 3D game from scratch. As with the previous project
+I worked on the tools and editor for the game.</p>
+<p>So what went wrong for this project? There are a lot of problems that we faced as a team, firstly our team was too big. In a
+typical school project 6-8 people is the optimal however our team size is 10. Not saying that 10 is a lot but we had no prior
+experience in working in a big team and we had to coordinate whos working on what. Besides that, because our team is big, the
+expectations are naturally higher. Initially we had a very big idea because we thought that it would be possible for a big
+team like ours to pull it off however I think we bite off more than we can chew and we had to keep taking away mechanics until
+the game was nothing like the original concept.</p>
+<p>Another issue with cutting away mechanics is prototyping. When we change the mechanics, we didn't really test out the mechanics
+before we implement it. And because we constantly change our game ideas and mechanics, our game becomes a mess. Meanwhile over at
+the technical side, we are also facing a lot of issues with the game engine. Our team chose to use the multicore engine provided
+to us which was not exactly production ready and have a lot of issues.</p>
+<p>We were quite inexperienced with multi core engine and thus we often make mistakes and assumed something and tons of bugs happened
+in the engine which leads to a very slow development. Contributing to the slow development is the tools, I think that as a tools
+programmer I have to make a good assets pipeline for the designers and developers to use however the pipeline is a mess right now.</p>
+<p>Apart from that our game engine currently uses something called the HTN which is a hierarchy task network which is like a behavior
+tree but more powerful. This is not a bad thing however I think that it adds unnecessary complexity to our game logic. Initially
+the plan was to make the HTN accessible to the designers so that they can use it to create the AI in the game however as of late,
+only we are using it. Therefore I think that we can do away with the unnecessary complexity and just code the game logic.</p>
+<p>Now, on to the things that went right. Definitely multi core! I feel that multi core is the way to go and we as programmer don't
+tend to think of things in parallel. In fact the real world is parallel and so we need to think in terms of multi core. Programming
+with a multi core engine has let me to learn a lot.</p>
+<p>Our current plans is to discard the original game idea and continue with a new game idea because we want to focus and make something
+fun. As for the technical side, we are intending to rewrite the game engine from scratch (hopefully we have time).</p>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul class="pager hidden-print">
+<li class="previous">
+                <a href="../level-creation-workflow/" rel="prev" title="Level creation workflow">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="../happy-new-year/" rel="next" title="Happy New Year">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><div>
+                <a href="https://github.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-github"></i>
+                </a>
+                <a href="https://gitlab.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-gitlab"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/zihegoh" target="blank">
+                    <i class="fab fa-lg fa-linkedin"></i>
+                </a>
+                <a href="/resume.pdf">
+                    <i class="far fa-lg fa-file-pdf"></i>
+                </a>
+                <a href="mailto:zihe.goh@gmail.com">
+                    <i class="fas fa-lg fa-envelope"></i>
+                </a>
+            </div>
+
+            <div>
+                <p>© 2021         <a href="mailto:zihe.goh@gmail.com">0xfe11</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            </div>
+            
+        </footer>
+</div>
+    
+            <script src="../../assets/js/baguetteBox.min.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

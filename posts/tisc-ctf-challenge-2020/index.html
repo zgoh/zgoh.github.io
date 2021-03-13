@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>TISC CTF challenge 2020 | 127.0.0.1</title>
+<link href="../../assets/css/baguetteBox.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/rst_base.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/code.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/theme.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<link href="../../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="https://0xfe11.github.io/posts/tisc-ctf-challenge-2020/">
+<!--[if lt IE 9]><script src="../../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="0xfe11">
+<link rel="prev" href="../today-i-learn-some-python-tips/" title="Today I learn some Python tips!" type="text/html">
+<link rel="next" href="../setting-up-a-single-user-xfce-environment-for-freebsd/" title="Setting up a single user XFCE environment for FreeBSD" type="text/html">
+<meta property="og:site_name" content="127.0.0.1">
+<meta property="og:title" content="TISC CTF challenge 2020">
+<meta property="og:url" content="https://0xfe11.github.io/posts/tisc-ctf-challenge-2020/">
+<meta property="og:description" content="TISC CTF challenge 2020 is a CTF challenge organized by the Centre for Strategic Infocomm
+Technologies (CSIT). There a few stages in the challenge which I will talk about, and as I did not
+complete th">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-09-08T19:59:39+08:00">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+         
+    <header id="header"><h1 id="brand"><a href="https://0xfe11.github.io/" title="127.0.0.1" rel="home">
+
+        <span id="blog-title">127.0.0.1</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../../pages/about/index.html">About</a></li>
+                <li><a href="../../index.html">Blog</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">TISC CTF challenge 2020</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="." rel="bookmark">
+            <time class="published dt-published" datetime="2020-09-08T19:59:39+08:00" itemprop="datePublished" title="08 Sep 2020">08 Sep 2020</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>TISC CTF challenge 2020 is a CTF challenge organized by the Centre for Strategic Infocomm
+Technologies (CSIT). There a few stages in the challenge which I will talk about, and as I did not
+complete the whole CTF and it was a 48 hour event, I did not have a chance to go back and complete
+it. I am still figuring out stage 3 on my own time. Do let me know if you completed it, I am
+curious about solving it.</p>
+<div class="section" id="stages">
+<h2>Stages</h2>
+<ul class="simple">
+<li><p>Stage 1 ( Cracking zip challenge )</p></li>
+<li><p>Stage 2 ( Finding the public key in binary )</p></li>
+<li><p>Stage 3 ( Decrypting file challenge )</p></li>
+</ul>
+<div class="section" id="stage-1">
+<h3>Stage 1</h3>
+<p>In this stage, there is a password protected zip file with instructions to extract the content
+buried inside the compressed file. Apparently the file was compressed a few times by different
+programs and the final zip file was password protected. The only hint about the password is that,
+it is a password of length 6 and only contains hexadecimal string (meaning from 000000 - FFFFFF).</p>
+<div class="section" id="cracking-the-zip-file">
+<h4>Cracking the zip file</h4>
+<p>This part is fairly straightforward with password cracking tool, fcrackzip.</p>
+<pre class="code bash"><a name="rest_code_e3835383939643d6b3392f36ef3b83e8-1"></a>$ fcrackzip -c <span class="m">1</span>:abcdefABCDEF -l <span class="m">6</span> -u file.zip
+</pre>
+<p>This will run fairly quickly and will get us the password we need to decompress the file. The file
+content inside is a file name temp.mess. According to the description given, the file is compressed/
+encoded a few times. To verify this, run the file command on the temp.mess file. Doing this will
+reveal it as a gz file.</p>
+<pre class="code bash"><a name="rest_code_b2e6b0c0af694515867dadf05e6a146b-1"></a>$ file temp.mess
+<a name="rest_code_b2e6b0c0af694515867dadf05e6a146b-2"></a>temp.mess: gz ....
+</pre>
+</div>
+<div class="section" id="decompressing-and-decoding">
+<h4>Decompressing and decoding</h4>
+<p>After we decompress the file, we realize that the output of the file is another xz compressed file,
+we will decompress the file a few more times and we will
+see that the output will be compressed with one of the following,</p>
+<blockquote>
+<ul class="simple">
+<li><p>bzip</p></li>
+<li><p>gzip</p></li>
+<li><p>xz</p></li>
+<li><p>zlib</p></li>
+</ul>
+</blockquote>
+<p>and the following encoding being used,</p>
+<blockquote>
+<ul class="simple">
+<li><p>base64</p></li>
+<li><p>hexadecimal</p></li>
+</ul>
+</blockquote>
+<p>Basically I wrote a python script to read the file using libmagic to determine their file type,
+if it is any of the above, I will either decode it or decompress it using the corresponding library
+in python. The end result will be a json file with the flag.</p>
+</div>
+</div>
+<div class="section" id="stage-2">
+<h3>Stage 2</h3>
+<p>In stage 2, a ransomware binary is shared and the objective is to find the public key used. The
+flag can then be obtained by getting the sha256 hash of the public key. The hint in the challenge
+is that the public key is in the form LS0. If you are unfamiliar like I was initially, the base64
+encoding of the public key is in the form LS0....</p>
+<p>Now that the string to find is given, we can start to hunt for the keys.</p>
+<div class="section" id="analyze-the-binary">
+<h4>Analyze the binary</h4>
+<p>Running file command on the binary indicates that it is an ELF 64 binary built with Go compiler.
+It is also unstripped which is useful for our analysis.</p>
+</div>
+<div class="section" id="unpack-the-binary">
+<h4>Unpack the binary</h4>
+<p>When analyzing the binary, make sure it is unpacked before doing in depth analysis. I made the
+mistake of analyzing with strings but I managed to spot the string "UPX" that made me remember that
+binary can be packed. Therefore you can use UPX here to unpack it.</p>
+<pre class="code bash"><a name="rest_code_74a4a5ea0014442982b94aea64240672-1"></a>$ upx -d binary
+</pre>
+<p>After which I ran strings again to check, unfortunately in Go, the strings are not null terminated
+therefore strings might not give any useful result.</p>
+</div>
+<div class="section" id="analyze-binary-in-ghidra">
+<h4>Analyze binary in Ghidra</h4>
+<p>After I realized strings is not as useful, I loaded the binary in Ghidra and have a look at it
+through some static analysis. I note down the functions of interest and their memory address. In Go,
+the main is main_main, and the init is in main_init. Go uses a stack calling convention as opposed
+to the usual register based x86 calling convention. This made the analysis a bit harder for me as I
+learned afterwards.</p>
+<p>Anyways there are some functions of interest to note. One of which is the DecodeString function
+that is called in main_main.</p>
+</div>
+<div class="section" id="getting-the-flag-with-gdb">
+<h4>Getting the flag with GDB</h4>
+<p>Be careful when dealing with the sample, although it is not of a malicious intent, it could cause
+potential nusiance and thus I would advice to run the binary in a VM.</p>
+<p>I start GDB with the binary and immediately set the breakpoint at the DecodeString function.
+Below is how I set the breakpoint and check the function.</p>
+<pre class="code bash"><a name="rest_code_7037b92f3cb84fdd8d1a60b755aa85e3-1"></a><span class="o">(</span>GDB<span class="o">)</span> b *0x12345    <span class="c1"># Set breakpoint at address 0x12345</span>
+<a name="rest_code_7037b92f3cb84fdd8d1a60b755aa85e3-2"></a><span class="o">(</span>GDB<span class="o">)</span> r             <span class="c1"># Run the program</span>
+<a name="rest_code_7037b92f3cb84fdd8d1a60b755aa85e3-3"></a><span class="o">(</span>GDB<span class="o">)</span> si            <span class="c1"># Step into</span>
+<a name="rest_code_7037b92f3cb84fdd8d1a60b755aa85e3-4"></a><span class="o">(</span>GDB<span class="o">)</span> info args     <span class="c1"># Check the func args passed</span>
+</pre>
+<p>Here we should see the execution enters the function and when it enters the function, info args
+command will print the args passed into the function. Here we will see that one of the argument is
+a string of this form "LS0...."</p>
+<p>Here we can copy and paste the string and test if the string is really what we are looking for.</p>
+<pre class="code bash"><a name="rest_code_b194f9dc416941a9b66e0f4e32090661-1"></a>$ <span class="nb">echo</span> LS0.... <span class="p">|</span> base64 -d
+</pre>
+<p>This should print ---Begin ..... which marks the public key in pem encoding. To get the flag, we can
+do the following</p>
+<pre class="code bash"><a name="rest_code_c79e7243c0514169a42ef7ad24cb154f-1"></a>$ sha256 -s LS0...
+</pre>
+<p>This will be the flag for stage 2.</p>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h3>Conclusion</h3>
+<p>Unfortunately I did not make it to stage 3. I did some offline analysis on my own but I could not
+figure out what the binary is doing. I hope one day I will post about the analysis of stage 3.
+That is all for my TISC 2020 CTF. It have been a nice experience for me.</p>
+</div>
+</div>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul class="pager hidden-print">
+<li class="previous">
+                <a href="../today-i-learn-some-python-tips/" rel="prev" title="Today I learn some Python tips!">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="../setting-up-a-single-user-xfce-environment-for-freebsd/" rel="next" title="Setting up a single user XFCE environment for FreeBSD">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><div>
+                <a href="https://github.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-github"></i>
+                </a>
+                <a href="https://gitlab.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-gitlab"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/zihegoh" target="blank">
+                    <i class="fab fa-lg fa-linkedin"></i>
+                </a>
+                <a href="/resume.pdf">
+                    <i class="far fa-lg fa-file-pdf"></i>
+                </a>
+                <a href="mailto:zihe.goh@gmail.com">
+                    <i class="fas fa-lg fa-envelope"></i>
+                </a>
+            </div>
+
+            <div>
+                <p>© 2021         <a href="mailto:zihe.goh@gmail.com">0xfe11</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            </div>
+            
+        </footer>
+</div>
+    
+            <script src="../../assets/js/baguetteBox.min.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

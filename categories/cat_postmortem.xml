@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>127.0.0.1 (Posts about Postmortem)</title><link>https://0xfe11.github.io/</link><description></description><atom:link href="https://0xfe11.github.io/categories/cat_postmortem.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:zihe.goh@gmail.com"&gt;0xfe11&lt;/a&gt; </copyright><lastBuildDate>Sat, 13 Mar 2021 08:12:52 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>The Last Defender PostMortem</title><link>https://0xfe11.github.io/posts/the-last-defender-postmortem/</link><dc:creator>0xfe11</dc:creator><description>&lt;div&gt;&lt;p&gt;This is actually my second 3D game that I have helped to develop. Now that the game is done, I wanted to quickly write down my thoughts
+on what went wrong and areas of improvement as well as the things that went smoothly for the project. Following that I would also like
+to share my future plans.&lt;/p&gt;
+&lt;div class="section" id="what-went-wrong"&gt;
+&lt;h2&gt;What went wrong?&lt;/h2&gt;
+&lt;div class="section" id="lack-of-communications-and-vision"&gt;
+&lt;h3&gt;1. Lack of communications and vision.&lt;/h3&gt;
+&lt;p&gt;The main issue that I had when developing for The Last Defender (TLD) is that we do not have a clear vision of what we want to achieve. Most
+of the time, we do not know what we want and we merely implement the stuff based on what we feel is needed for the game. This in turn made the
+game went in all sorts of directions.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="poor-engine-architecture"&gt;
+&lt;h3&gt;2. Poor engine architecture.&lt;/h3&gt;
+&lt;p&gt;A lot of our development time were spent on fixing bugs. I believed that were having memory bugs because it would caused random crash from time to time.
+I think that this late into the development, we should be spending more time churning out newer contents and rather than that, most of our time were spent
+fixing engine bugs which caused our gameplay logic to be very fragile. It crashed really easily and sometimes we had no idea where was causing to crash.&lt;/p&gt;
+&lt;p&gt;One such area where we believed were having issues were the tween system. The tween system initially keeps reference to objects, meaning that when the items
+dies, it will still be holding the reference to these items and potentially modiyfing memory. The fix was to recreate the tween front end to take in handles
+instead of the reference to the objects. These took a little while to get used to and eventually, all of the system was using it. This fixed some of our
+issues that we were having.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="losing-motivations"&gt;
+&lt;h3&gt;3. Losing motivations.&lt;/h3&gt;
+&lt;p&gt;Several times during the span of the project, I was not really motivated to continue the project. I would rather focus on my other assignments than work
+on the game. Reason because that I feel that this was not a game that I would enjoy playing much. This made me realized that it is tough to work as a game
+developer if I cannot enjoy the game. I think I still want to make games, but perhaps not for a big studio, I want to make something that I enjoy making.&lt;/p&gt;
+&lt;p&gt;Apart from me, I can tell some of my team mates have like really low morale when it comes to the game. We have weekly meetings and standups but I feel that
+rather than serving its purpose of informing what others are doing, I feel that it is more of a chore. I think it might be because of the way it is organized.
+I think team meetings is where team mates come together and show each other what they have done. Rather than talking about it, it's better to show others
+what you have been working on.&lt;/p&gt;
+&lt;p&gt;That being said, I am going to try my hands on being an app developer for a while. Did I mention, I currently found an internship position at an NUS
+lab/startup. They are making apps that will benefit people and I want to try my hands on working on apps rather than games for a little while.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="what-went-right"&gt;
+&lt;h2&gt;What went right?&lt;/h2&gt;
+&lt;div class="section" id="able-to-make-assets-even-without-artists"&gt;
+&lt;h3&gt;1. Able to make assets even without artists.&lt;/h3&gt;
+&lt;p&gt;Most important thing in games is always about creating assets. Unfortunately for us, our artists left during the start of the semester and therefore we
+had to rely on our own to create our own 2D/3D art assets. Additionally, we also had an additional external member help with the sound design.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="juicy-particles-and-feedbacks"&gt;
+&lt;h3&gt;2. Juicy particles and feedbacks.&lt;/h3&gt;
+&lt;p&gt;Our particle system is quite powerful, thanks to our graphics engineer. Thanks to the tool, our gameplay programmer was able to add lots of feedbacks and
+particles to the game. To the point where it's too much. I think that is good in any game. Feedback and adding juice to the gameplay is equally important
+to the gameplay experience. And here I would like to thank our gameplay programmers for making the game so juicy.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="conclusion"&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;This is my first 3D game (without commercial engine) that I can proudly say that I completed. Though the game could have been better, I am glad that we
+did what we can and finished up the game. The whole journey is not wasted, we can always learn something from this current projects. I hope that with the
+current experience and knowledge, we would not make the same kind of mistakes again, in regards to engineering to game design decisions. With that, I hope
+that everybody will enjoy the game. You can check out the game at the DigiPen games gallery and I will be posting a trailer and pictures soon. Stay tuned.&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;</description><guid>https://0xfe11.github.io/posts/the-last-defender-postmortem/</guid><pubDate>Fri, 11 Aug 2017 23:52:25 GMT</pubDate></item><item><title>BeeSeiged Postmortem</title><link>https://0xfe11.github.io/posts/beeseiged-postmortem/</link><dc:creator>0xfe11</dc:creator><description>&lt;div&gt;&lt;p&gt;This is the latest game that I have been working on for my school project (GAM 300). We are supposed to make a 3D game
+from a custom game engine that we build on our own. We had submitted the first playable in the engine and now I will talk
+about how it went for this project. This project is my first time building a 3D game from scratch. As with the previous project
+I worked on the tools and editor for the game.&lt;/p&gt;
+&lt;p&gt;So what went wrong for this project? There are a lot of problems that we faced as a team, firstly our team was too big. In a
+typical school project 6-8 people is the optimal however our team size is 10. Not saying that 10 is a lot but we had no prior
+experience in working in a big team and we had to coordinate whos working on what. Besides that, because our team is big, the
+expectations are naturally higher. Initially we had a very big idea because we thought that it would be possible for a big
+team like ours to pull it off however I think we bite off more than we can chew and we had to keep taking away mechanics until
+the game was nothing like the original concept.&lt;/p&gt;
+&lt;p&gt;Another issue with cutting away mechanics is prototyping. When we change the mechanics, we didn't really test out the mechanics
+before we implement it. And because we constantly change our game ideas and mechanics, our game becomes a mess. Meanwhile over at
+the technical side, we are also facing a lot of issues with the game engine. Our team chose to use the multicore engine provided
+to us which was not exactly production ready and have a lot of issues.&lt;/p&gt;
+&lt;p&gt;We were quite inexperienced with multi core engine and thus we often make mistakes and assumed something and tons of bugs happened
+in the engine which leads to a very slow development. Contributing to the slow development is the tools, I think that as a tools
+programmer I have to make a good assets pipeline for the designers and developers to use however the pipeline is a mess right now.&lt;/p&gt;
+&lt;p&gt;Apart from that our game engine currently uses something called the HTN which is a hierarchy task network which is like a behavior
+tree but more powerful. This is not a bad thing however I think that it adds unnecessary complexity to our game logic. Initially
+the plan was to make the HTN accessible to the designers so that they can use it to create the AI in the game however as of late,
+only we are using it. Therefore I think that we can do away with the unnecessary complexity and just code the game logic.&lt;/p&gt;
+&lt;p&gt;Now, on to the things that went right. Definitely multi core! I feel that multi core is the way to go and we as programmer don't
+tend to think of things in parallel. In fact the real world is parallel and so we need to think in terms of multi core. Programming
+with a multi core engine has let me to learn a lot.&lt;/p&gt;
+&lt;p&gt;Our current plans is to discard the original game idea and continue with a new game idea because we want to focus and make something
+fun. As for the technical side, we are intending to rewrite the game engine from scratch (hopefully we have time).&lt;/p&gt;&lt;/div&gt;</description><guid>https://0xfe11.github.io/posts/beeseiged-postmortem/</guid><pubDate>Mon, 12 Dec 2016 06:27:41 GMT</pubDate></item><item><title>Basket Brawl postmortem - A design perspective</title><link>https://0xfe11.github.io/posts/basket-brawl-postmortem-a-design-perspective/</link><dc:creator>0xfe11</dc:creator><description>&lt;div&gt;&lt;p&gt;Making a game fun is no easy feat and sometimes we stumble upon what seems like a normal idea and it somehow becomes super fun. We are a great example of that. This will be how BasketBrawl becomes that game.&lt;/p&gt;
+&lt;p&gt;BasketBrawl started off as a simple Unity prototype where there are 2 players and which players are allowed to snatch and shoot a basketball into the hoops. That was the basic idea of the initial game. We play test the prototype and we found out that it was relatively fun because there is a certain level of competitiveness in the game because players constantly want to take control of the ball and try to score. In the initial prototype, players snatch by touching another player and when they shoot, the characters will freeze in air and they can aim. I did that because I realized that it would be fun if players can aim properly and that will make the game easier.&lt;/p&gt;
+&lt;p&gt;As we develop the game we did a few changes to the mechanics of the initial prototype, we made players drop slowly instead of hanging in air when they shoot and we implement a snatching key so that player will have to "snatch" instead of the one in the Unity prototype where player lose the ball automatically when they walk past another player. This created a sense of playing real life basketball when players can choose to snatch as and when they want, additionally we disabled the snatching for the player with the ball because it doesn't make sense for player with the ball to snatch.&lt;/p&gt;
+&lt;p&gt;Another thing that we add was a simple shooting indicator where player can see roughly the trail of where their shot is going to end up at and that greatly improves the scoring of both players. We also made platforms climbable and this allows for a faster and tighter game play. We added the platforms because in our Unity prototype, the levels was only occupying the bottom half of the screen and players have trouble catching up to the other player, therefore we added that so that player can move to the top of the screen faster.&lt;/p&gt;
+&lt;p&gt;In the original Unity prototype, the hoops were preset to a few locations and will be randomly switched to the next hoop when player score in the hoop thus discouraging players from camping at the same area and scoring multiple shots. In addition to that, we made the ball spawned at random location instead of a fixed location whenever the game starts so that the seasoned player cannot remember where the ball will spawn. I think that this change is a very important thing for the game because this makes the game a different experience every time you play because the element of randomness makes the game a little unpredictable and every game feels like a unique match.&lt;/p&gt;
+&lt;p&gt;Our game have 8 different maps, each having a different theme and property, we have 2 icy, volcano, windy and underwater level, each having different properties like icy level being more slippery and windy level having constant wind blowing the ball and character. This clever level properties combined with the clever use of random in the game can allow things like lucky shots to happen for example in the windy level, the hoops are placed in a planned position so that sometimes scoring one shot will lead to subsequent lucky shots due to the wind.&lt;/p&gt;
+&lt;p&gt;In the game, the element of random, competitiveness makes the game addictive and combined with the gentle learning curve, makes the player hard not to like the game. In this aspect I think that the game is doing really well and this is where it shine.
+We also introduced slight rubber banding because we realized that some players are not that good when playing against strong players so we introduced a catching up system where the lower points player can score higher when his score is lower during the last minute of the game.&lt;/p&gt;
+&lt;p&gt;However every game is not without it's flaws and there are a few design flaws that I will share when developing the game. The game's strong suit is that it offers players some degree of freedom when it comes to choosing the characters to play, but this in turn makes the balancing of the game very hard and till now, I can't say for sure that the characters are balanced. Along with the characters that players choose, the levels are equally important in helping the characters shine however when we design the levels, we did not adopt proper metric system to measure the area between platforms and this made the game fairly awkward in some places.&lt;/p&gt;
+&lt;p&gt;Another matter that I feel that we could handle it better was the rubber banding, when we introduced the rubber banding, the system wasn't as good because though it allows for the lower points player to catch up, the higher points player can hog the ball during the last minute of the game and this just broke our system.&lt;/p&gt;
+&lt;p&gt;These are my only dissatisfaction for the game because I really hope to make a fun and balanced game but despite all these flaws, the game is very enjoyable.&lt;/p&gt;
+&lt;p&gt;P.S. I have included a &lt;a class="reference external" href="https://googledrive.com/host/0BxvxphVst5bxUHV0Rm41Q05HdjA"&gt;link&lt;/a&gt; to the original Unity Prototype.&lt;/p&gt;&lt;/div&gt;</description><guid>https://0xfe11.github.io/posts/basket-brawl-postmortem-a-design-perspective/</guid><pubDate>Fri, 08 Apr 2016 20:14:57 GMT</pubDate></item></channel></rss>

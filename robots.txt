@@ -1,0 +1,4 @@
+Sitemap: https://0xfe11.github.io/sitemapindex.xml
+
+User-Agent: *
+Host: 0xfe11.github.io

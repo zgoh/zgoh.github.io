@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="My general thoughts on game dev and coding">
+<meta name="viewport" content="width=device-width">
+<title>127.0.0.1 (old posts, page 1) | 127.0.0.1</title>
+<link href="assets/css/baguetteBox.min.css" rel="stylesheet" type="text/css">
+<link href="assets/css/rst_base.css" rel="stylesheet" type="text/css">
+<link href="assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
+<link href="assets/css/code.css" rel="stylesheet" type="text/css">
+<link href="assets/css/theme.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<link href="assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="rss.xml">
+<link rel="canonical" href="https://0xfe11.github.io/index-1.html">
+<link rel="prev" href="index-2.html" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5shiv-printshiv.min.js"></script><![endif]-->
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+         
+    <header id="header"><h1 id="brand"><a href="https://0xfe11.github.io/" title="127.0.0.1" rel="home">
+
+        <span id="blog-title">127.0.0.1</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="pages/about/index.html">About</a></li>
+                <li><a href="index.html">Blog</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><div class="postindex">
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/level-creation-workflow/" class="u-url">Level creation workflow</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/level-creation-workflow/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-11-30T05:18:20+08:00" itemprop="datePublished" title="30 Nov 2016">30 Nov 2016</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>It's been some time since I discussed about my game. Currently we are developing a third person action/stealth kind of game with multiple characters and mechanics. In this project, I am in charge of the tools/editor. Making a 3D level is much harder than making a 2D level because 3D have much more items and it is important to have an user friendly editor to place the props and levels.</p>
+<p>In the beginning, we had to manually place the levels piece by piece into the game using the tools that I make, however for larger levels, it starts to become a pain to use because certain features was bugged and it was hard to place the items without snapping and cloning. I know we had to use another way to build our levels.</p>
+<p>That's when we learn about how we can build our levels in 3ds max and export them out into the game. What I am referring here is not about exporting the level as one mesh and import into the game. We had thought of doing that at the start but that was not a feasible idea because we would have to build/generate our collision data somehow from the level meshes. We had to scrap that idea and we came across a better idea.</p>
+<p>Instead of exporting the whole level as a mesh, we will export the whole levels as just transform data. This is to say, we would export the position, rotation and scaling into a file and that file will be read by our editor to reproduce the levels. Of course all of this isn't automatic, it requires the designer to create the prefabs that are needed by the level before hand. The xml file will contain the name of the prefab that will be instantiated and the data as to where to place them.</p>
+<p>This method is slow to begin because I had to create all the prefabs for the items that will be used in the beginning. However subsequently all I need to do is export the level and reimport the data provided by Max to rebuild the levels.</p>
+<p>Though this method is good, it has some things that the designer/artist need to take note while putting the items. Our game uses a right handed coordinate system similar to opengl similar to Maya but Max uses a different system. First thing to note is the Max to our engine coordinate system. What we did was rotate the models by -90 about the x axis. This will ensure the model will be in the correct coordinate. Next we need to apply a transformation to the coordinates when we export the level as xml so that the the coordinate will be correct when reading into the editor.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/game-scripts/" class="u-url">Game scripts</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/game-scripts/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-06-14T16:11:39+08:00" itemprop="datePublished" title="14 Jun 2016">14 Jun 2016</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>I have been thinking of integrating some form of scripting for a very long time. Personally I started learning to make my game in ActionScript 3, it was a very easy language to work with and I loved it. I later moved on to learning Haxe and I never went back, I found that scripting is easier to program in compared to C/C++ which needs a lot of wrapping around the memory of the machine which can be quite daunting for the game designers in the team.</p>
+<p>Maybe in a commercial game engines, game designers have to be equipped with the knowledge of C/C++ but for our own purpose, I needed a game engine with an easy to learn scripting language for our game designers. I do not want them to be discouraged from doing scripting in the game, therefore I am thinking of implementing a scripting system for them.</p>
+<p>There are a lot of scripting language out there and a simple search will give you some language like Lua, Python, JavaScript, C#, Squirrel, AngelScript and a few more which I won't be mentioning. I know the industry standard is Lua for scripting and I think there must be a reason that most of the game engines use it, however I have my concerns of Lua as well because I played around with <a class="reference external" href="http://love2d.org/">Love2D</a> a little and I don't really like Lua (but Love2D is very good in my opinion). That's a post for another time.</p>
+<p>In the end, I chose C# maybe because I have seen how powerful Unity is and I have used a little C# and I think it is a very powerful language. Additionally, our game designers are learning C# and Unity.</p>
+<p>I might explore other scripting language for my personal project. I am interested to try out AngelScript/Squirrel.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/mono-embedding-crashes-on-windows/" class="u-url">Mono Embedding Crashes on Windows</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/mono-embedding-crashes-on-windows/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-06-12T15:38:22+08:00" itemprop="datePublished" title="12 Jun 2016">12 Jun 2016</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>When I was looking at the documentation on how to integrate mono into our c++ application, I was running into an issue where the application crashed every time I try to initialize mono. A simple search on the internet did not return any immediate results and I went to look for tutorials on how to setup a project in visual studio 2015 and mono. I thought it was my vs settings.</p>
+<p>After looking at some of the sites, I came across <a class="reference external" href="https://github.com/PoppermostProductions/Embedded-Mono-Sample/">this embed sample</a> which have a simple visual studio project. After some inspection, I realized that the problem with the tutorial on mono-projects did not mention about setting the directory of your mono binary/library.</p>
+<p>Finally I just did what the embed sample did and make a copy of mono into my project directory and call <strong>mono_set_dirs</strong>.</p>
+<p>TL;DR if <strong>mono_jit_init</strong> crashes, be sure to call <strong>mono_set_dirs</strong> before and have mono in your project directory.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/using-dlls-to-reload-game-code/" class="u-url">Using DLLs to reload game code</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/using-dlls-to-reload-game-code/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-04-18T02:49:53+08:00" itemprop="datePublished" title="18 Apr 2016">18 Apr 2016</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>I came across <a class="reference external" href="https://github.com/RuntimeCompiledCPlusPlus/RuntimeCompiledCPlusPlus">Runtime Compiled C++</a> some time ago and also <a class="reference external" href="https://handmadehero.org/">Handmade Hero</a>, which have some form of automatic reloading of game code whenever there is a change in the source file. Even <a class="reference external" href="https://www.unrealengine.com">Unreal</a> and <a class="reference external" href="http://unity3d.com/">Unity3D</a> engine supports some form of reloading game code while the game is running.</p>
+<p>So, I am going to implement this functionality into my game engine which I am writing from scratch (again). I was thinking of splitting the game engine into two parts, the core engine and the game logic parts, where the core engine parts are written in C++ and the game logic portion will hopefully use C#. The two parts will hopefully support run-time compiled so that the programmers can write code and see the results almost immediately.</p>
+<p>So far I have been able to reload my core engine code while the game engine is running, and I will explain how I achieve this using the DLL loading method. Before diving into the code, you might want to check out CodingLab's <a class="reference external" href="http://www.codinglabs.net/tutorial_CppRuntimeCodeReload.aspx">Runtime Code Reload</a> and also <a class="reference external" href="https://www.youtube.com/watch?v=WMSBRk5WG58">Handmade Hero video series</a> (specifically Day 21,22)&lt;/a&gt; . This are the pages that helped me understand how to implement this form of reloading using DLL.</p>
+<p>The brief explanation of this technique is that we have a few separate projects, one of which is the main executable that is in charge of reloading the DLLs and the rest are game/engine libraries which are to be loaded by the main executable. Additional feature that I added is the watching of file directory for file changes and recompiling the project when there's a change, but I will not discuss the file watching process in depth (maybe in a future post).</p>
+<p>Firstly, we need to set up a visual studio solutions with multiple projects (for this example, we will create only two) and make sure one of the project is a dynamic link library. Once that is set up, go to the DLL's project properties and C/C++ &amp;gt; General &amp;gt; Debug Information Format and change it to Program Database (/Zi). Now we can move on to write code that will be loaded by our executable. (Note: Remember to set the project dependency so that our executable will always build after the DLL).</p>
+<p>There are few ways that we can write code for our DLL to be picked up by our executable, but the way that I am using is having an interface that is exposed to the executable to call into and that interface will not expose my internal DLL's code. This way, I do not need to export all my classes and functions, only those in the interface files will be exported and those wrapper functions will call my internal functions.</p>
+<p>To expose functions/classes from the DLL, you need to add <strong>extern "C" __declspec(dllexport)</strong> to the start of the function so that the compiler knows that this function needs to be exported into a table which is inside the DLL, note: the extern "C" part is so that the names do not get mangled when it creates the DLL file. Inside the functions we can call other functions which are not exported so we can change the internals without affecting how the executable call into the DLL.</p>
+<p>In our executable program, we need to call <a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms684175%28v=vs.85%29.aspx">LoadLibrary</a> and <a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683212%28v=vs.85%29.aspx">GetProcAddress</a> to be able to call our game code. LoadLibrary simply loads the DLL file and GetProcAddress allow us to look for the symbol in the table that was generated by the compiler, if this call succeed, we will have a pointer to the interface wrapper function in which we can call.</p>
+<p>I have attached a <a class="reference external" href="https://drive.google.com/file/d/0BxvxphVst5bxNmlld0I5OUhZOXM/view?usp=sharing">simple project</a> that demonstrate the ability to reload the DLL after changing the code. To test the code, press P to print out the message that is in the DLL and you can change the code in the GameCode project and  press R to rebuild the code while the executable is running.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/basket-brawl-postmortem-a-design-perspective/" class="u-url">Basket Brawl postmortem - A design perspective</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/basket-brawl-postmortem-a-design-perspective/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-04-09T04:14:57+08:00" itemprop="datePublished" title="09 Apr 2016">09 Apr 2016</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>Making a game fun is no easy feat and sometimes we stumble upon what seems like a normal idea and it somehow becomes super fun. We are a great example of that. This will be how BasketBrawl becomes that game.</p>
+<p>BasketBrawl started off as a simple Unity prototype where there are 2 players and which players are allowed to snatch and shoot a basketball into the hoops. That was the basic idea of the initial game. We play test the prototype and we found out that it was relatively fun because there is a certain level of competitiveness in the game because players constantly want to take control of the ball and try to score. In the initial prototype, players snatch by touching another player and when they shoot, the characters will freeze in air and they can aim. I did that because I realized that it would be fun if players can aim properly and that will make the game easier.</p>
+<p>As we develop the game we did a few changes to the mechanics of the initial prototype, we made players drop slowly instead of hanging in air when they shoot and we implement a snatching key so that player will have to "snatch" instead of the one in the Unity prototype where player lose the ball automatically when they walk past another player. This created a sense of playing real life basketball when players can choose to snatch as and when they want, additionally we disabled the snatching for the player with the ball because it doesn't make sense for player with the ball to snatch.</p>
+<p>Another thing that we add was a simple shooting indicator where player can see roughly the trail of where their shot is going to end up at and that greatly improves the scoring of both players. We also made platforms climbable and this allows for a faster and tighter game play. We added the platforms because in our Unity prototype, the levels was only occupying the bottom half of the screen and players have trouble catching up to the other player, therefore we added that so that player can move to the top of the screen faster.</p>
+<p>In the original Unity prototype, the hoops were preset to a few locations and will be randomly switched to the next hoop when player score in the hoop thus discouraging players from camping at the same area and scoring multiple shots. In addition to that, we made the ball spawned at random location instead of a fixed location whenever the game starts so that the seasoned player cannot remember where the ball will spawn. I think that this change is a very important thing for the game because this makes the game a different experience every time you play because the element of randomness makes the game a little unpredictable and every game feels like a unique match.</p>
+<p>Our game have 8 different maps, each having a different theme and property, we have 2 icy, volcano, windy and underwater level, each having different properties like icy level being more slippery and windy level having constant wind blowing the ball and character. This clever level properties combined with the clever use of random in the game can allow things like lucky shots to happen for example in the windy level, the hoops are placed in a planned position so that sometimes scoring one shot will lead to subsequent lucky shots due to the wind.</p>
+<p>In the game, the element of random, competitiveness makes the game addictive and combined with the gentle learning curve, makes the player hard not to like the game. In this aspect I think that the game is doing really well and this is where it shine.
+We also introduced slight rubber banding because we realized that some players are not that good when playing against strong players so we introduced a catching up system where the lower points player can score higher when his score is lower during the last minute of the game.</p>
+<p>However every game is not without it's flaws and there are a few design flaws that I will share when developing the game. The game's strong suit is that it offers players some degree of freedom when it comes to choosing the characters to play, but this in turn makes the balancing of the game very hard and till now, I can't say for sure that the characters are balanced. Along with the characters that players choose, the levels are equally important in helping the characters shine however when we design the levels, we did not adopt proper metric system to measure the area between platforms and this made the game fairly awkward in some places.</p>
+<p>Another matter that I feel that we could handle it better was the rubber banding, when we introduced the rubber banding, the system wasn't as good because though it allows for the lower points player to catch up, the higher points player can hog the ball during the last minute of the game and this just broke our system.</p>
+<p>These are my only dissatisfaction for the game because I really hope to make a fun and balanced game but despite all these flaws, the game is very enjoyable.</p>
+<p>P.S. I have included a <a class="reference external" href="https://googledrive.com/host/0BxvxphVst5bxUHV0Rm41Q05HdjA">link</a> to the original Unity Prototype.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/live-textures-reloading/" class="u-url">Live Textures Reloading</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/live-textures-reloading/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-03-28T01:55:21+08:00" itemprop="datePublished" title="28 Mar 2016">28 Mar 2016</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>While I was drawing for my game, BasketBrawl, I would always draw, export the art, (close the game if it's opened and) start the game and repeat this whole work flow. Notice how I need to constantly close and restart my game just to see a particular image in my game and I find this process too tedious that I thought to myself, why not make the game reload the textures when it needs?</p>
+<p>Thus, I came out with a solution for my game engine, though this can be expanded to reloading of other assets as well but for my use case, I only extend it for reloading of images file.</p>
+<p>Initially what I thought of was to keep track of list of all files and it's last modified dates and use it to compare, however after some research, I came across ReadDirectoryChangesW api that Windows supplied. There is <a class="reference external" href="https://developersarea.wordpress.com/2014/09/26/win32-file-watcher-api-to-monitor-directory-changes/">one page</a> that gives a detailed explanation on how to use ReadDirectoryChangesW and he has code samples as well.</p>
+<p>To use it in my game engine, I put the code in my main file where all my windows platform codes are. There is certain things that one must take note when using this api, because we cannot just run this function on our main thread because this will block the main thread and that is not what we want. The method that I used is just using regular c++11 <a class="reference external" href="http://www.cplusplus.com/reference/thread/thread/">thread</a> and run it there in my WinMain function. When the thread receives a file modification event, the file watcher will be called and it will notify my game engine to unload and reload the textures on the fly.</p>
+<p>I have also use the file watcher to monitor file adding/removing because whenever we add or remove a texture, currently I need to manually update all the textures by running a batch file inside the textures folder, so what I did was when there is a file adding/removal event, I will use <a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/bb762153%28v=vs.85%29.aspx">ShellExecute</a> function to run my batch file and then reload the textures.</p>
+<p>Implementing live reload is actually very simple but do take note of some issues when live reloading, mainly my game crashes a few times because of textures loading issues because we are using the DirectXTK's texture loader and it crashes a few time. So I think it would be better to pause the game engine while doing the updating and resume the game engine when all necessary updating is done.</p>
+<p>This can easily extend to reloading of audio or scripts as well.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/how-roll-engine-was-made/" class="u-url">How Roll Engine was made?</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/how-roll-engine-was-made/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-03-25T05:27:00+08:00" itemprop="datePublished" title="25 Mar 2016">25 Mar 2016</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>Hey everyone, today I am going to talk about how our game engine aka Roll Engine, (RE for short) is made. and I am going to share about some of the technical problems I have faced when programming a game engine from scratch. Although this is not a commercial engine, I wanted to share some errors that I made and give you tips and how to make a better engine (hopefully) in the future.</p>
+<p>I will share about my background experiences in game engine building before I delve into talking about RE.</p>
+<p>The first time I learned about engines is from flash, mainly <a class="reference external" href="http://useflashpunk.net/">FlashPunk</a>, then I moved on to learn <a class="reference external" href="https://haxe.org/">Haxe</a> and (sort of) develop my own engine, <a class="reference external" href="https://github.com/zine92/ZE2D">ZE2D</a> for making simple 2D games. From then on, I learned about main game loops and the different types of main game loops, I recommend reading Koen Witters's blog post about main <a class="reference external" href="https://www.koonsolo.com/news/dewitters-gameloop/">game loop</a>. It wasn't until when I started to develop my own game engine from scratch (in c++) that I had to find out how to write a proper game loop.</p>
+<p>Before I started writing my own game engine from scratch, I had worked on 2 games that require me to code in C++, that was my first exposure to writing games in C++. The first project, I worked on the game play logic mostly and in the second project, we were given a graphics engine and I worked on getting up a working structure for the game engine. Here I learned how a simple engine can be constructed with the handling of game state and entities.</p>
+<p>After the first two projects, we had to build our own game engine which I named it RE. Before I started to build RE, I looked around for resources on how to make games with C++ and I managed to stumble onto this wonder video series, <a class="reference external" href="https://handmadehero.org/">Handmade Hero</a> by <a class="reference external" href="https://mollyrocket.com/casey/about.html">Casey Muratori</a>. At that point of time, he just started the series and I tried to follow his series especially the beginning where he demonstrated how to build the initial systems for the game. That is how I got into the world of Win32 programming and I started to do my own side project. The project that I did was having a simple WinMain function and a very simple game loop along with simple input using RawInput, on top of that I tried to do a simple editor like window for the application. The result was a windowed application with a toolbar and basic input and simple DirectX rendering (without sprites yet).</p>
+<p>This led me to my second attempt at building a game engine from scratch again, this time round, I tried using the <a class="reference external" href="https://wxwidgets.org/">wxWidgets</a> because I have seen a senior team using it for their game project and so I wanted to do the same thing as well. This second attempt is mostly about getting wxWidgets to work on top of the base that I had previously built. WxWidgets is quite troublesome to set up because of the large source files and I couldn't find a proper way to build the code from scratch initially, but I managed to dig through the readme files and found a way to get it to build. That roughly marks the start of how RE was born.</p>
+<p>So far, the major problems I face was incorporating an editor into the engine, building the core systems for the engine and how to incorporate the logic components into the game engine and which graphics rendering api to adopt.</p>
+<p>Note: The decisions that I made here is only valid to me and my team. Whatever I said here might be bias or incorrect but it works for my team, so do take into considerations when making a sound decision.</p>
+<p>The decisions I made was to stick with wxWidgets rather than the Win32 api or Qt (or the 101 windows toolkit out there) because I had tried to use wx earlier and I seen how powerful the editor that my seniors have made. The second decision that I made to the team was to use Direct X 11, similarly this was also the decision that my senior had made and some seniors told us that DirectX is easier to use than OpenGL.</p>
+<p>A few weeks into development and I had got the editor to work partially with the necessary windows however there is one burning question that I always asked myself, how do I do reflection/serialization with my game objects? I went on to the internet and I tried to follow a few tutorials and pages but I didn't find much useful article except for one by <a class="reference external" href="http://www.randygaul.net/2012/10/01/c-reflection-type-metadata-introduction">Randy Gaul</a>, his article on metadata reflection and serialization. I tried to use his codes as a base to build my own solutions but I ended up not using it because mine was quite complicated to use. End up, I decided to rewrite my reflection system and use the visitor pattern to implement a simpler version of a <a class="reference external" href="http://gamedev.stackexchange.com/questions/76257/c-property-system-interface-for-game-editors-reflection-system">reflection system</a> by <a class="reference external" href="http://gamedev.stackexchange.com/users/7697/sean-middleditch">Sean Middleditch</a>.</p>
+<p>Meanwhile, I am still getting the editor up and running, there are a few teams which are interested in building an external editor like me, they also started Qt/wx. However as I progressed, I realized that building the external editor is going to take up lots of my development time because I have still been struggling to build the basic game engine structure, so the next technical decision that I made was to throw away the external editor and turn towards an in game editor solution. There are two libraries that I know of that can do this, the first one being <a class="reference external" href="https://github.com/ocornut/imgui">dear imgui</a>, and the second one was <a class="reference external" href="http://anttweakbar.sourceforge.net">AntTweakBar</a>. I have briefly looked at the imgui's (Immediate mode GUI) way of displaying UI and I took a liking to how easy it was to display UI, though I think AntTweakBar might do the same, I did not look at the sample code, so I went along with dear imgui.</p>
+<p>Throwing the external editor out, I now focus on building the in game editor for the game engine while my team build the physics, graphics, logic systems. Here, my team member proposed to me about having handles for game objects so that we will not be dealing with the pointers and I agreed. I have seen that handles can be useful from this article by <a class="reference external" href="http://gamesfromwithin.com/managing-data-relationships">Noel Llopis</a>. Most of the object creation are done by one of my team mates while I focused on building the reflection/serialization systems.</p>
+<p>In every engine, there is always a need for message passing and there are a few ways that we can do it. I did not want the tean to implement a complicated solution and end up not using it, so I made a clear decision here that our messaging system will be simple bubbling up messaging where all the systems will broadcast to the core (root) and then broadcast downwards to all systems again. This kind of messaging works for most of our use cases where we have things like window resizing and moving and we need to notify the graphics system that this is happening. We do not use this for our logic components.</p>
+<p>Components is also another thing that was on my mind constantly when I started to build our engine, because I do not know how to store all this components and if so, how do these components interact with one another. The choice that I made was to have different systems for each type of components, e.g. transform systems will have an array of transform components and is responsible of managing them. So I have a graphics, transform, physics, collision and logic system with their own components. The logic system is a little special because it holds different subsystems or factories for different logic 'scripts' which are just .cpp files and then manages them.</p>
+<p>Back to the editor, it is just an object with all the functionality inside, so the editor sits on top of the scene management system and can be removed from the engine without affecting the game engine at all.</p>
+<p>Basically that's most of the things that we have done for RE. Be sure to keep a lookout for the game Basket Brawl. That's the name of the game that we are developing at DigiPen. Stay tuned for more "How I Make Games"!</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/thinking-about-data-oriented-design/" class="u-url">Thinking about data oriented design</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/thinking-about-data-oriented-design/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-01-16T14:01:00+08:00" itemprop="datePublished" title="16 Jan 2016">16 Jan 2016</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>I have been programming with the object oriented for a long time and I came across data oriented design and so I thought I would give it a try. This is my attempt at trying to create a system that is data oriented.</p>
+<p>I would start with a simple example of how I would apply this to my game engine's transform system. Entity have position, scale, rotation information and instead of creating an array of the Entity structure with all the properties which is not cache friendly, we also cannot write an algorithm that makes use of the cache efficiently. Why is this so?</p>
+<p>Imagine we have an array of Entity structure, in our memory layout all our information that we want to access are all surrounded by unused data due to other data that are present in the structure but not needed for the algorithm.</p>
+<p>Therefore the proposed method of doing things is separating the data into an array of positions, an array of rotations and an array of scales. We then write our code to access all the positions/scale/rotation at once, this saves the number of cache miss since we need to access the data that are only needed by the algorithm.</p>
+<p>There are lots of good website with good explanation for data oriented design. This is my first attempt to try to implement it into my game engine. I will try to post more when I learn more.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/making-a-game-editor-with-winform/" class="u-url">Making a game editor with WinForm</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/making-a-game-editor-with-winform/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-01-12T04:03:00+08:00" itemprop="datePublished" title="12 Jan 2016">12 Jan 2016</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <div><p>One of the many things that I feel that is very important in making a game engine is making the editor together with the engine. The editor should be a tool that is done early to aid the game designers. The engine tools is to support the game but the editor is to support the creation of the game which I think is very important.</p>
+<p>So far I have seen various tools that are used to build the editor, ranging from in-game editor to external editors. In this post, I will mainly be talking about the external editors which can be build with libraries like the wxWidgets, Qt, WinForms or really any windows toolkit. In this post, I will talk about how to build an editor in WinForms(C#) and glue it to your engine code(C++) using some easy way. The reason I chose WinForms is because of the environment that I will be working on will be Windows mostly and it is included in Visual Studio by default, so no rebuilding of libraries and stuff.</p>
+<p>Initially when I was looking for ways to make the editor in WinForms, I can only find a few tutorials on how to do this. There are a few good tutorials but I do not understand what was going on but after I setup myself, I got a pretty good understanding of what's going on. (If you want to know how to setup, read the next part.) We know that our WinForms application will be in C#, so how do we get it to run code from our engine? The answer is using managed C++, because C# is a (.NET) managed library and the CLR C++ is also a (.NET) library. We can create an interface layer in CLR C++ and include that library that we build into the editor. This was the editor can call our engine function via the layer and the layer is communicating with the engine directly (because both are C++).</p>
+<p>To setup the project, we will need Visual Studio (2015 is the one that I use but any version from 2010 should suffice.). Firstly, create a new (Visual C# Windows Forms Application). Next we need the C++ interface layer for our editor, add a new (Visual C++ CLR Class Library) project to the solution. Now we need to add the reference to our C# project so that we can access the C++ interface. Build the whole solution and make sure that a dll file is generated in the folder and then selecting the C# project, go to the References  and right click to add references, make sure to add the correct dll file in the build folder.</p>
+<p>Next, we need 2 more projects, one contains the WinMain for starting up the game engine without the editor and the other project for storing only the game engine which can be started with either with main or through the editor. Let's create the project for the WinMain, for this we need to add a (Visual C++ Empty Project). Lastly, we add another (Visual C++ Win32 Application Static Library) project.</p>
+<p>The most important thing to note when building is, always build the static library first because this is needed by all the other 3 projects. We can set the build dependencies by right clicking the project and setting it (Build Dependencies Project Dependencies). Make sure all the other 3 projects depends on the static lib which will be your engine code, and additional note for your editor project, it will need to depend on your C++ interface project as well, so add that to the dependency.</p>
+<p>After setting the build order, make sure the project can be build without any errors, and we can move on to set the include folders for the interface and WinMain project because they will need to use the headers inside of the static lib.</p>
+<p>Now build the project again, make sure that it builds cleanly and fix any errors. Now that we get the project working, we need to think of a way to call our engine from the editor. That's why we have to expose our engine functionality to the interface project which will be included by our editor as an assembly and we can call it from there.</p>
+<p>To see how to setup the engine in your editor, you can download the sample project and take a look at how it is being setup.</p>
+<p>There you have it, this will form the base for your game editor and engine. Sorry I did not include the codes to for the editor and the interface layer, to have a look below for the download link for the project or take a look at the extra links below.</p>
+<p>Thanks to these tutorials which helped me through with the setup of the projects.</p>
+<p><a class="reference external" href="http://www.gamedev.net/page/resources/_/technical/directx-and-xna/hosting-a-c-d3d-engine-in-c-winforms-r2526">Hosting a D3D in WinForm</a>.</p>
+<p><a class="reference external" href="http://www.gamedev.net/page/resources/_/technical/directx-and-xna/hosting-a-c-d3d-engine-in-c-winforms-r2526">Help using directx with winforms/wpf</a>.</p>
+<p><a class="reference external" href="http://www.gamedev.net/page/resources/_/technical/directx-and-xna/hosting-a-c-d3d-engine-in-c-winforms-r2526">Download link for project</a>.</p></div>
+    </div>
+    --></article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="posts/press-start/" class="u-url">Press Start</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="posts/press-start/" rel="bookmark">
+            <time class="published dt-published" datetime="2016-01-07T11:37:00+08:00" itemprop="datePublished" title="07 Jan 2016">07 Jan 2016</time></a>
+            </p>
+        </div>
+    </header><!--
+    <div class="e-content entry-content">
+    <body><p>After much delays, I decided to just start a proper blog to document my game development journey and I hope to post some technical stuff as well. I hope you will enjoy the journey with me as it goes.</p></body>
+    </div>
+    --></article>
+</div>
+
+        <nav class="postindexpager"><ul class="pager">
+<li class="previous">
+                <a href="index-2.html" rel="prev">Newer posts</a>
+            </li>
+        </ul></nav></main><footer id="footer"><div>
+                <a href="https://github.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-github"></i>
+                </a>
+                <a href="https://gitlab.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-gitlab"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/zihegoh" target="blank">
+                    <i class="fab fa-lg fa-linkedin"></i>
+                </a>
+                <a href="/resume.pdf">
+                    <i class="far fa-lg fa-file-pdf"></i>
+                </a>
+                <a href="mailto:zihe.goh@gmail.com">
+                    <i class="fas fa-lg fa-envelope"></i>
+                </a>
+            </div>
+
+            <div>
+                <p>© 2021         <a href="mailto:zihe.goh@gmail.com">0xfe11</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            </div>
+            
+        </footer>
+</div>
+    
+            <script src="assets/js/baguetteBox.min.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

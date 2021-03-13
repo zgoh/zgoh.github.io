@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex
+    xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+                        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+ <sitemap>
+  <loc>https://0xfe11.github.io/categories/cat_data-oriented.xml</loc>
+  <lastmod>2021-03-13T08:12:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://0xfe11.github.io/categories/cat_ideas.xml</loc>
+  <lastmod>2021-03-13T08:12:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://0xfe11.github.io/categories/cat_postmortem.xml</loc>
+  <lastmod>2021-03-13T08:12:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://0xfe11.github.io/categories/cat_unknown.xml</loc>
+  <lastmod>2021-03-13T08:12:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://0xfe11.github.io/rss.xml</loc>
+  <lastmod>2021-03-13T08:12:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://0xfe11.github.io/sitemap.xml</loc>
+  <lastmod>2021-03-13T08:12:00Z</lastmod>
+ </sitemap>
+</sitemapindex>

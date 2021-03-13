@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Installing Kali Linux on FreeBSD bhyve | 127.0.0.1</title>
+<link href="../../assets/css/baguetteBox.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/rst_base.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/code.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/theme.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<link href="../../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="https://0xfe11.github.io/posts/installing-kali-linux-on-freebsd-bhyve/">
+<!--[if lt IE 9]><script src="../../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="0xfe11">
+<link rel="prev" href="../deploying-dash-application-to-heroku-for-freebsd/" title="Deploying Dash application to Heroku (for FreeBSD)" type="text/html">
+<meta property="og:site_name" content="127.0.0.1">
+<meta property="og:title" content="Installing Kali Linux on FreeBSD bhyve">
+<meta property="og:url" content="https://0xfe11.github.io/posts/installing-kali-linux-on-freebsd-bhyve/">
+<meta property="og:description" content="Currently I wanted to learn some penetration testing and I have heard a fair bit about FreeBSD's hypervisor bhyve and I thought why not
+install one Kali/Parrot on my FreeBSD machine. Bhyve is a a Free">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2021-03-13T14:18:50+08:00">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+         
+    <header id="header"><h1 id="brand"><a href="https://0xfe11.github.io/" title="127.0.0.1" rel="home">
+
+        <span id="blog-title">127.0.0.1</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../../pages/about/index.html">About</a></li>
+                <li><a href="../../index.html">Blog</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Installing Kali Linux on FreeBSD bhyve</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="." rel="bookmark">
+            <time class="published dt-published" datetime="2021-03-13T14:18:50+08:00" itemprop="datePublished" title="13 Mar 2021">13 Mar 2021</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Currently I wanted to learn some penetration testing and I have heard a fair bit about FreeBSD's hypervisor bhyve and I thought why not
+install one Kali/Parrot on my FreeBSD machine. Bhyve is a a FreeBSD hypervisor built into the base of FreeBSD. One can set up the vm using
+just bhyve and the FreeBSD handbook, but I decided to use the tool vm-bhyve to help me with the task. After much tinkering, this is the steps
+that I have collected to deploy a Kali on my machine. Note: I have issues with booting Parrot OS somehow. I just got a blinking cursor which
+I could not got through. I will need to take a look another time. For now this are the steps that I have done.</p>
+<pre class="code bash"><a name="rest_code_e2de4428efd84bdb9c19a892da704595-1"></a><span class="c1"># Install grub2-bhyve for linux grub bootloader</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-2"></a><span class="c1"># vm-bhyve is wrapper for bhyve</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-3"></a>doas pkg install vm-bhyve grub2-bhyve
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-4"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-5"></a><span class="c1"># Install any vnc client you like, for me I am using tigervnc</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-6"></a>doas pkg install tigervnc
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-7"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-8"></a><span class="c1"># Load kernel virtualization module</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-9"></a>doas kldload if_bridge if_tap nmdm vmm
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-10"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-11"></a><span class="c1"># Make loading of kernel modules persistent</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-12"></a>doas <span class="nb">echo</span> <span class="s1">'if_bridge_load="YES"'</span> &gt;&gt; /boot/loader.conf
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-13"></a>doas <span class="nb">echo</span> <span class="s1">'if_tap_load="YES"'</span> &gt;&gt; /boot/loader.conf
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-14"></a>doas <span class="nb">echo</span> <span class="s1">'nmdm_load="YES"'</span> &gt;&gt; /boot/loader.conf
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-15"></a>doas <span class="nb">echo</span> <span class="s1">'vmm_load="YES"'</span> &gt;&gt; /boot/loader.conf
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-16"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-17"></a><span class="c1"># Set configuration for byhve-vm</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-18"></a>doas sysrc <span class="nv">vm_enable</span><span class="o">=</span><span class="s2">"YES"</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-19"></a>doas sysrc <span class="nv">vm_dir</span><span class="o">=</span><span class="s2">"zfs:zroot/vms"</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-20"></a>doas sysrc <span class="nv">vm_delay</span><span class="o">=</span><span class="s2">"5"</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-21"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-22"></a><span class="c1"># Edit our pf rules</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-23"></a>doas vi /etc/pf.conf
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-24"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-25"></a><span class="c1"># Add the following, taken from https://aliov.org/index.php/2020/03/22/bhyve-nat-vm-setup/</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-26"></a><span class="c1"># Note: IPs are taken from reference of https://github.com/churchers/vm-bhyve/wiki/NAT-Configuration</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-27"></a>nat on wlan0 from <span class="o">{</span><span class="m">192</span>.168.8.0/24<span class="o">}</span> to any -&gt; <span class="o">(</span>wlan0<span class="o">)</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-28"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-29"></a><span class="c1"># Enable ip forwarding</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-30"></a>doas sysctl net.inet.ip.forwarding<span class="o">=</span><span class="m">1</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-31"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-32"></a><span class="c1"># Set configuration for NAT (network for our guest)</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-33"></a><span class="nv">gateway_enable</span><span class="o">=</span><span class="s2">"yes"</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-34"></a><span class="nv">pf_enable</span><span class="o">=</span><span class="s2">"yes"</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-35"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-36"></a><span class="c1"># Start PF if not started</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-37"></a>doas service pf start
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-38"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-39"></a><span class="c1"># Otherwise restart</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-40"></a>doas service pf restart
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-41"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-42"></a><span class="c1"># Create filesystem for VMs, all the vms will live inside, managed by vm-bhyve (settings above)</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-43"></a>doas zfs create -o <span class="nv">mountpoint</span><span class="o">=</span>/vms zroot/vms
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-44"></a>doas vm init
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-45"></a>doas cp /usr/local/share/examples/vm-bhyve/* /vms/.templates/
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-46"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-47"></a><span class="c1"># Create bridge device, as I am using wifi, I set it to wlan0</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-48"></a>doas vm switch create -a <span class="m">192</span>.168.8.1/24 public
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-49"></a>doas vm switch add public wlan0
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-50"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-51"></a><span class="c1"># To see switch info</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-52"></a>doas vm switch info
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-53"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-54"></a><span class="c1"># To see all switches</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-55"></a>doas vm switch list
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-56"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-57"></a><span class="c1"># Grab Kali from the net (Note: source could be local filesystem) will be downloaded to /vms/.iso</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-58"></a>doas vm iso https://cdimage.kali.org/kali-2021.1/kali-linux-2021.1-installer-amd64.iso
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-59"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-60"></a><span class="c1"># Create the VM (-t stands for template and -s is the size of the vm)</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-61"></a><span class="c1"># More templates can be found at /vms/.templates</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-62"></a>doas vm create -t debian -s 20G mykali
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-63"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-64"></a><span class="c1"># Configure things like memory, cpu, uefi, vnc settings</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-65"></a>doas vm configure mykali
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-66"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-67"></a><span class="c1"># This are the things I added, refer to https://github.com/churchers/vm-bhyve/wiki/UEFI-Graphics-(VNC)</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-68"></a><span class="nv">cpu</span><span class="o">=</span><span class="m">2</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-69"></a><span class="nv">memory</span><span class="o">=</span>4G
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-70"></a><span class="nv">uefi</span><span class="o">=</span><span class="s2">"yes"</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-71"></a><span class="nv">graphics</span><span class="o">=</span><span class="s2">"yes"</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-72"></a><span class="nv">graphics_res</span><span class="o">=</span><span class="s2">"1600x1200"</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-73"></a><span class="nv">xhci_mouse</span><span class="o">=</span><span class="s2">"yes"</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-74"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-75"></a><span class="c1"># To check the iso name in the iso store</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-76"></a>doas vm iso
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-77"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-78"></a><span class="c1"># In this case kali-linux-2021.1-installer-amd64.iso is the iso I want</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-79"></a>DATASTORE           FILENAME
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-80"></a>default             kali-linux-2021.1-installer-amd64.iso
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-81"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-82"></a><span class="c1"># Start installation from the ISO, this step will boot the vm with the iso</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-83"></a>doas vm install mykali  kali-linux-2021.1-installer-amd64.iso
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-84"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-85"></a><span class="c1"># Since I am intending to use with TigerVNC, I put in 127.0.0.1:5900 (default vnc port) for the host</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-86"></a>vncviewer <span class="m">127</span>.0.0.1:5900
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-87"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-88"></a><span class="c1"># Due to the uefi folder not in BOOT, it will not boot properly hence what I did was use the expert install menu</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-89"></a><span class="c1"># and when prompted about installing grub to my removable drive, I click yes and it will show a installing to dummy grub</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-90"></a><span class="c1"># Otherwise if you miss this, you can still remediate</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-91"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-92"></a><span class="c1"># After install, you can always configure again if you need to add resource whatsoever</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-93"></a>doas vm configure mykali
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-94"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-95"></a><span class="c1"># Enable autostart of the newly created VM, if you want</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-96"></a>doas sysrc <span class="nv">vm_list</span><span class="o">=</span><span class="s2">"mykali"</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-97"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-98"></a><span class="c1"># Otherwise you can manually start with</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-99"></a>doas vm start mykali
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-100"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-101"></a><span class="c1"># If you have not done the installing grub fix, you might be faced with an boot failed efi cdrom/dvd message.</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-102"></a><span class="c1"># Wait a while for a shell to appear, type exit the quit the shell and you should see a bhyve boot menu</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-103"></a><span class="c1"># go to Boot Maintainence Manager &gt; Boot From File &gt; YOUR_BOOT_LABEL</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-104"></a><span class="c1"># You should see an EFI entry inside, go ahead into kali and select the grubx64.efi, your OS should not show the</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-105"></a><span class="c1"># bootloader</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-106"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-107"></a><span class="c1"># Once inside, do the following to fix the grub issue, Note: this have to be done everytime grub updates</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-108"></a>sudo su
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-109"></a>mkdir /boot/efi/EFI/BOOT/
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-110"></a><span class="nb">cd</span> /boot/efi/EFI/kali
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-111"></a>cp grubx64.efi /boot/efi/EFI/BOOT/bootx64.efi
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-112"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-113"></a><span class="c1"># Reboot the machine to see the change</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-114"></a>reboot
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-115"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-116"></a><span class="c1"># To stop the vm and power down if there is any issue, other can just power off from the guest</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-117"></a>doas vm stop mykali
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-118"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-119"></a><span class="c1"># To see list of all vms and it's state</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-120"></a>doas vm list
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-121"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-122"></a><span class="c1"># To set up internet in the kali, right click on the network connection icon on the top bar and click edit connection</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-123"></a><span class="c1"># Go to the ipv4 settings and set the machine ip to be 192.168.8.2/24 and the gateway to be 192.168.8.1</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-124"></a><span class="c1"># Set the DNS to 8.8.8.8 (Google DNS)</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-125"></a><span class="c1"># Try to ping the following and make sure it is not timed out</span>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-126"></a>ping -c <span class="m">2</span> <span class="m">192</span>.168.8.1
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-127"></a>ping -c <span class="m">2</span> <span class="m">8</span>.8.8.8
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-128"></a>
+<a name="rest_code_e2de4428efd84bdb9c19a892da704595-129"></a><span class="c1"># If all else succeed, you will have Kali Linux running on your FreeBSD laptop with internet access.</span>
+</pre>
+<dl class="simple">
+<dt>All thanks to (for troubleshooting and guides):</dt>
+<dd><ul class="simple">
+<li><p><a class="reference external" href="https://www.davd.io/install-ubuntu-on-freebsd-with-bhyve/">Install Ubuntu on FreeBSD with byhve (Update Ubuntu 18.04)</a></p></li>
+<li><p><a class="reference external" href="https://www.cyberciti.biz/faq/how-to-install-linux-vm-on-freebsd-using-bhyve-and-zfs/">How to install Linux VM on FreeBSD using bhyve and ZFS</a></p></li>
+<li><p><a class="reference external" href="https://github.com/churchers/vm-bhyve/wiki/UEFI-Graphics-(VNC)">UEFI Graphics (VNC) vm-bhyve wiki</a></p></li>
+<li><p><a class="reference external" href="https://github.com/churchers/vm-bhyve/wiki/NAT-Configuration">Nat configuration vm-bhhyve wiki</a></p></li>
+<li><p><a class="reference external" href="https://blog.tkrn.io/freenas-11-boot-failed-efi-misc-device-fix-debian/">FreeNAS 11 “Boot Failed. EFI Misc Device” Fix (Debian)</a></p></li>
+<li><p><a class="reference external" href="https://www.jongibbins.com/solving-uefi-boot-problems-on-bhyve-freenas-vm/">Solving UEFI Boot Problems on Bhyve / FreeNAS VM</a></p></li>
+<li><p><a class="reference external" href="https://aliov.org/index.php/2020/03/22/bhyve-nat-vm-setup/">bhyve wireless NAT vm setup</a></p></li>
+</ul></dd>
+</dl>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul class="pager hidden-print">
+<li class="previous">
+                <a href="../deploying-dash-application-to-heroku-for-freebsd/" rel="prev" title="Deploying Dash application to Heroku (for FreeBSD)">Previous post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><div>
+                <a href="https://github.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-github"></i>
+                </a>
+                <a href="https://gitlab.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-gitlab"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/zihegoh" target="blank">
+                    <i class="fab fa-lg fa-linkedin"></i>
+                </a>
+                <a href="/resume.pdf">
+                    <i class="far fa-lg fa-file-pdf"></i>
+                </a>
+                <a href="mailto:zihe.goh@gmail.com">
+                    <i class="fas fa-lg fa-envelope"></i>
+                </a>
+            </div>
+
+            <div>
+                <p>© 2021         <a href="mailto:zihe.goh@gmail.com">0xfe11</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            </div>
+            
+        </footer>
+</div>
+    
+            <script src="../../assets/js/baguetteBox.min.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

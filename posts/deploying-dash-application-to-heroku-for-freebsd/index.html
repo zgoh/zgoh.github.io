@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Deploying Dash application to Heroku (for FreeBSD) | 127.0.0.1</title>
+<link href="../../assets/css/baguetteBox.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/rst_base.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/code.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/theme.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<link href="../../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="https://0xfe11.github.io/posts/deploying-dash-application-to-heroku-for-freebsd/">
+<!--[if lt IE 9]><script src="../../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="0xfe11">
+<link rel="prev" href="../recap-on-2020/" title="Recap on 2020" type="text/html">
+<link rel="next" href="../installing-kali-linux-on-freebsd-bhyve/" title="Installing Kali Linux on FreeBSD bhyve" type="text/html">
+<meta property="og:site_name" content="127.0.0.1">
+<meta property="og:title" content="Deploying Dash application to Heroku (for FreeBSD)">
+<meta property="og:url" content="https://0xfe11.github.io/posts/deploying-dash-application-to-heroku-for-freebsd/">
+<meta property="og:description" content="Before you begin, ensure that you have the following prerequisite before you begin,
+
+Prerequisite
+
+Heroku account
+git
+python and virtualenv
+
+
+
+Creating project from scratch
+
+Step 1. Create a new folde">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2021-01-03T10:18:32+08:00">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+         
+    <header id="header"><h1 id="brand"><a href="https://0xfe11.github.io/" title="127.0.0.1" rel="home">
+
+        <span id="blog-title">127.0.0.1</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../../pages/about/index.html">About</a></li>
+                <li><a href="../../index.html">Blog</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Deploying Dash application to Heroku (for FreeBSD)</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="." rel="bookmark">
+            <time class="published dt-published" datetime="2021-01-03T10:18:32+08:00" itemprop="datePublished" title="03 Jan 2020">03 Jan 2020</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Before you begin, ensure that you have the following prerequisite before you begin,</p>
+<div class="section" id="prerequisite">
+<h2>Prerequisite</h2>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://www.heroku.com/">Heroku</a> account</p></li>
+<li><p>git</p></li>
+<li><p>python and virtualenv</p></li>
+</ol>
+</div>
+<div class="section" id="creating-project-from-scratch">
+<h2>Creating project from scratch</h2>
+<div class="section" id="step-1-create-a-new-folder-for-your-new-dash-app">
+<h3>Step 1. Create a new folder for your new <a class="reference external" href="https://dash.plotly.com/">Dash</a> app</h3>
+<p>Here we will create a new folder to put our project in</p>
+<blockquote>
+<pre class="code bash"><a name="rest_code_59a1f8997cff426b87d872f24f6db91b-1"></a>$ mkdir my_dash_app
+<a name="rest_code_59a1f8997cff426b87d872f24f6db91b-2"></a>$ <span class="nb">cd</span> my_dash_app
+</pre>
+</blockquote>
+</div>
+<div class="section" id="step-2-init-the-folder-with-git-and-a-virtualenv">
+<h3>Step 2. Init the folder with git and a virtualenv</h3>
+<blockquote>
+<pre class="code bash"><a name="rest_code_601221b6faec49e699d177c87c9aa53b-1"></a>$ git init                          <span class="c1"># initializes an empty git repo</span>
+<a name="rest_code_601221b6faec49e699d177c87c9aa53b-2"></a>$ virtualenv venv                   <span class="c1"># creates a virtualenv called "venv"</span>
+<a name="rest_code_601221b6faec49e699d177c87c9aa53b-3"></a>$ <span class="nb">source</span> venv/bin/activate          <span class="c1"># uses the virtualenv</span>
+</pre>
+</blockquote>
+</div>
+<div class="section" id="step-3-pip-install-dash-and-gunicorn-package">
+<h3>Step 3. (Pip) install <a class="reference external" href="https://dash.plotly.com/">Dash</a> and <a class="reference external" href="https://gunicorn.org/">Gunicorn</a> package</h3>
+<blockquote>
+<pre class="code bash"><a name="rest_code_529f57a4b3254d9bbae3ac4fd81aa2a6-1"></a>$ pip install dash
+<a name="rest_code_529f57a4b3254d9bbae3ac4fd81aa2a6-2"></a>$ pip install plotly
+<a name="rest_code_529f57a4b3254d9bbae3ac4fd81aa2a6-3"></a>$ pip install gunicorn
+</pre>
+</blockquote>
+</div>
+<div class="section" id="step-4-initialize-the-folder-with-sample-app-for-deployment">
+<h3>Step 4. Initialize the folder with sample app for deployment</h3>
+<p>Create the following files in the project folder</p>
+<p><strong>app.py</strong></p>
+<blockquote>
+<pre class="code python"><a name="rest_code_0121d8ab16954de090805c52d79d661c-1"></a><span class="kn">import</span> <span class="nn">dash</span>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-2"></a><span class="kn">import</span> <span class="nn">dash_core_components</span> <span class="k">as</span> <span class="nn">dcc</span>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-3"></a><span class="kn">import</span> <span class="nn">dash_html_components</span> <span class="k">as</span> <span class="nn">html</span>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-4"></a>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-5"></a><span class="n">external_stylesheets</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'https://codepen.io/chriddyp/pen/bWLwgP.css'</span><span class="p">]</span>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-6"></a>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-7"></a><span class="n">app</span> <span class="o">=</span> <span class="n">dash</span><span class="o">.</span><span class="n">Dash</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">external_stylesheets</span><span class="o">=</span><span class="n">external_stylesheets</span><span class="p">)</span>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-8"></a>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-9"></a><span class="n">server</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">server</span>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-10"></a>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-11"></a><span class="n">top_markdown_text</span> <span class="o">=</span> <span class="s1">'''</span>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-12"></a><span class="s1">This is my first deployed app</span>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-13"></a><span class="s1">'''</span>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-14"></a>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-15"></a><span class="n">app</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">([</span>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-16"></a>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-17"></a>    <span class="n">dcc</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="n">top_markdown_text</span><span class="p">),</span>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-18"></a>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-19"></a><span class="p">])</span>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-20"></a>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-21"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+<a name="rest_code_0121d8ab16954de090805c52d79d661c-22"></a>    <span class="n">app</span><span class="o">.</span><span class="n">run_server</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre>
+</blockquote>
+<p><strong>.gitignore</strong></p>
+<blockquote>
+<pre class="code text"><a name="rest_code_7af7c75ba1884c35b945dd7d1f1cb12e-1"></a>venv
+<a name="rest_code_7af7c75ba1884c35b945dd7d1f1cb12e-2"></a>*.pyc
+<a name="rest_code_7af7c75ba1884c35b945dd7d1f1cb12e-3"></a>.env
+</pre>
+</blockquote>
+<p><strong>Procfile</strong></p>
+<p>(Note that app refers to the filename app.py. server refers to the variable server inside that file).</p>
+<blockquote>
+<pre class="code text"><a name="rest_code_c10690133b7f4ddba9b56a70aad3ec0a-1"></a>web: gunicorn app:server
+</pre>
+</blockquote>
+<p><strong>requirements.txt</strong></p>
+<p>This is needed for heroku buildpacks to recognize that this is a python project.
+Basic requirements.txt</p>
+<blockquote>
+<pre class="code text"><a name="rest_code_416c378dc08f41d383cd7599bc385d42-1"></a>dash
+<a name="rest_code_416c378dc08f41d383cd7599bc385d42-2"></a>plotly
+<a name="rest_code_416c378dc08f41d383cd7599bc385d42-3"></a>gunicorn
+</pre>
+</blockquote>
+<p>or you can fill this with:</p>
+<blockquote>
+<pre class="code bash"><a name="rest_code_ad64dba7ea844cb6b88676d49bb2b0d1-1"></a>$ pip freeze &gt; requirements.txt
+</pre>
+</blockquote>
+</div>
+<div class="section" id="step-5-installing-heroku-cli-if-you-have-not">
+<h3>Step 5. Installing Heroku CLI (if you have not)</h3>
+<p>The <a class="reference external" href="https://devcenter.heroku.com/articles/heroku-cli">CLI</a> tool can be downloaded and installed on your system. There are few ways to install based on your operating system. As for myself,
+I am using FreeBSD, therefore I will just install the <a class="reference external" href="https://www.npmjs.com/package/heroku">NPM package</a> using <a class="reference external" href="https://yarnpkg.com/">yarn</a>.</p>
+<p>Note: The method I am using will install heroku cli tools to the dash project locally.</p>
+<blockquote>
+<pre class="code bash"><a name="rest_code_9c1dfe54e1e44146b5bd2ee4d80abce8-1"></a>$ sudo pkg install yarn             <span class="c1"># Make sure yarn is installed</span>
+<a name="rest_code_9c1dfe54e1e44146b5bd2ee4d80abce8-2"></a>$ yarn add heroku                   <span class="c1"># Will add heroku to the local project folder</span>
+<a name="rest_code_9c1dfe54e1e44146b5bd2ee4d80abce8-3"></a>$ yarn run heroku                   <span class="c1"># this will run heroku and print help messages</span>
+<a name="rest_code_9c1dfe54e1e44146b5bd2ee4d80abce8-4"></a>$ yarn run heroku <span class="o">[</span>cmd<span class="o">]</span>             <span class="c1"># To run heroku command</span>
+</pre>
+</blockquote>
+</div>
+<div class="section" id="step-6-initialize-heroku-add-files-to-git-and-deploy">
+<h3>Step 6. Initialize Heroku, add files to Git, and deploy</h3>
+<p>Note: as stated above, as I am running the heroku cli as a npm package installed locally, I need to use yarn run command.</p>
+<blockquote>
+<pre class="code bash"><a name="rest_code_ec0af265cdaa47efa312520e65e08e60-1"></a>$ yarn run heroku create my-dash-app <span class="c1"># change my-dash-app to a unique name</span>
+<a name="rest_code_ec0af265cdaa47efa312520e65e08e60-2"></a>$ git add .                          <span class="c1"># add all files to git</span>
+<a name="rest_code_ec0af265cdaa47efa312520e65e08e60-3"></a>$ git commit -m <span class="s1">'Initial app commit'</span>
+<a name="rest_code_ec0af265cdaa47efa312520e65e08e60-4"></a>$ git push heroku master             <span class="c1"># deploy code to heroku</span>
+<a name="rest_code_ec0af265cdaa47efa312520e65e08e60-5"></a>$ yarn run heroku ps:scale <span class="nv">web</span><span class="o">=</span><span class="m">1</span>     <span class="c1"># run the app with a 1 heroku "dyno"</span>
+</pre>
+</blockquote>
+<p>After this, you should be able to view your app at <a class="reference external" href="https://my-dash-app.herokuapp.com">https://my-dash-app.herokuapp.com</a> or whatever the app name
+you have set to.</p>
+</div>
+<div class="section" id="step-7-update-the-code-and-redeploy">
+<h3>Step 7. Update the code and redeploy</h3>
+<p>When you have made changes to the git repo, you can update heroku again using,</p>
+<blockquote>
+<pre class="code bash"><a name="rest_code_86a6fbdd10214f82920237c55084783c-1"></a>$ git status                        <span class="c1"># view the changes</span>
+<a name="rest_code_86a6fbdd10214f82920237c55084783c-2"></a>$ git add .                         <span class="c1"># add all the changes</span>
+<a name="rest_code_86a6fbdd10214f82920237c55084783c-3"></a>$ git commit -m <span class="s1">'a description of the changes'</span>
+<a name="rest_code_86a6fbdd10214f82920237c55084783c-4"></a>$ git push heroku master
+</pre>
+</blockquote>
+</div>
+</div>
+<div class="section" id="references">
+<h2>References</h2>
+<p><a class="reference external" href="https://dash.plotly.com/deployment">Deploying Dash Apps</a></p>
+<p><a class="reference external" href="https://devcenter.heroku.com/articles/getting-started-with-python">Getting Started on Heroku with Python</a></p>
+<p><a class="reference external" href="https://github.com/francoisstamant/dash_heroku_deployment">dash_heroku_deployment</a></p>
+</div>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul class="pager hidden-print">
+<li class="previous">
+                <a href="../recap-on-2020/" rel="prev" title="Recap on 2020">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="../installing-kali-linux-on-freebsd-bhyve/" rel="next" title="Installing Kali Linux on FreeBSD bhyve">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><div>
+                <a href="https://github.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-github"></i>
+                </a>
+                <a href="https://gitlab.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-gitlab"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/zihegoh" target="blank">
+                    <i class="fab fa-lg fa-linkedin"></i>
+                </a>
+                <a href="/resume.pdf">
+                    <i class="far fa-lg fa-file-pdf"></i>
+                </a>
+                <a href="mailto:zihe.goh@gmail.com">
+                    <i class="fas fa-lg fa-envelope"></i>
+                </a>
+            </div>
+
+            <div>
+                <p>© 2021         <a href="mailto:zihe.goh@gmail.com">0xfe11</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            </div>
+            
+        </footer>
+</div>
+    
+            <script src="../../assets/js/baguetteBox.min.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

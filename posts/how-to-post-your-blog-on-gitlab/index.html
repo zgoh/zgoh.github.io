@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>How to post your blog on GitLab? | 127.0.0.1</title>
+<link href="../../assets/css/baguetteBox.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/rst_base.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/code.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/theme.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<link href="../../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="https://0xfe11.github.io/posts/how-to-post-your-blog-on-gitlab/">
+<!--[if lt IE 9]><script src="../../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="0xfe11">
+<link rel="prev" href="../how-to-use-git-amend-to-push-your-blog/" title="How to use git amend to push your blog?" type="text/html">
+<link rel="next" href="../porting-space-invaders-clone-from-c%2B%2B-to-d/" title="Porting Space Invaders clone from C++ to D" type="text/html">
+<meta property="og:site_name" content="127.0.0.1">
+<meta property="og:title" content="How to post your blog on GitLab?">
+<meta property="og:url" content="https://0xfe11.github.io/posts/how-to-post-your-blog-on-gitlab/">
+<meta property="og:description" content="So you have heard the news that GitHub is going to be bought over by Microsoft for 7.5 Billion. Yes that's right. Lots of people are switching to alternatives, in fear of Microsoft ruining the party. ">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2018-06-06T21:51:26+08:00">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+         
+    <header id="header"><h1 id="brand"><a href="https://0xfe11.github.io/" title="127.0.0.1" rel="home">
+
+        <span id="blog-title">127.0.0.1</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../../pages/about/index.html">About</a></li>
+                <li><a href="../../index.html">Blog</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">How to post your blog on GitLab?</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="." rel="bookmark">
+            <time class="published dt-published" datetime="2018-06-06T21:51:26+08:00" itemprop="datePublished" title="06 Jun 2018">06 Jun 2018</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>So you have heard the news that GitHub is going to be <a class="reference external" href="https://news.microsoft.com/2018/06/04/microsoft-to-acquire-github-for-7-5-billion/">bought</a> over by Microsoft for 7.5 Billion. Yes that's right. Lots of people are switching to alternatives, in fear of Microsoft ruining the party. Honestly I think that new Microsoft has done a lot in the open source space. I mean, just looking at the amount of projects that Microsoft have opened source over the past few years. I think that this recent acquisition is not a bad thing after all.</p>
+<p>Maybe you are like me, you only hosted your website on GitHub and now that the acquisition has occurred, you thought about hosting your webpage on other hosting as well. And it just so happened that you realized that GitLab supports hosting pages as well. The reason I use GitLab is to host my private repositories, I didn't really use its other feature. Now that the deal is done, I thought it would be interesting to evaluate the different hosting website as well.</p>
+<p>Without further ado, let me guide you through the process of hosting the website on GitLab.</p>
+<div class="section" id="create-a-new-project">
+<h2>1. Create a new project</h2>
+<p>When creating the project, there are a few options, but for my case I named the project as USERNAME.gitlab.io which is similar to how to create my blog in GitHub.</p>
+</div>
+<div class="section" id="commit-the-blog-to-gitlab">
+<h2>2. Commit the blog to GitLab</h2>
+<p>This step is different to creating a page for GitHub because, for GitHub, I would just commit the html/css (generated by the static generators) to the repository. However for GitLab, it is a little different as the pages are generated by GitLab using their CI/CD tool. Therefore for the GitLab repository, I committed my whole blog, meaning to say in GitHub, I would commit my blog skeleton files in one repository and the static generated output pages onto my USERNAME.github.io project, however for GitLab, I committed my skeleton onto my USERNAME.gitlab.io repository and have a CI/CD file that GitLab will run and build my page from.</p>
+<p>This is useful in GitLab because I would not need to maintain two repositories. Also in the last post, I talked about how I pushed my blog to GitHub. For the case of GitLab, I would just commit the posts that I want and let the CI/CD tool handle the pushing of the webpage for me.</p>
+</div>
+<div class="section" id="set-up-ci-cd">
+<h2>3. Set up CI/CD</h2>
+<p>Go to GitLab's project page and click on Set up CI/CD, here GitLab have a few templates that you can choose from. Depending on the static generators used. There are templates for popular static generators like Jekyll, Hugo, Hexo. As for myself, I am using Nikola, thankfully there is a <a class="reference external" href="https://gitlab.com/pages">sample page</a> where you can clone from and learn how they host.</p>
+<p>I am currently using Nikola and there is certain things to take note. Firstly, when running Nikola build (to generate the webpage), it will output to a folder named output. GitLab's pages however requires the generated output to be in this <em>public</em> folder. Hence, we can either set the output folder to public in the config.py file. Personally for me, I want to keep it as output.</p>
+<p>Therefore what I did was to edit the CI/CD file to have additional steps to move from the output to the public folder. I found out about this from the <a class="reference external" href="https://gitlab.com/pages/nikola#troubleshooting">troubleshooting</a> section of the sample Nikola page.</p>
+</div>
+<div class="section" id="wait-for-ci-cd-to-complete-the-job">
+<h2>4. Wait for CI/CD to complete the job</h2>
+<p>After all the things have been done, you now wait for the CI/CD task to complete and make sure that all jobs passed. When it all passed, head over to settings &gt; page and you will see a link below. It should say something like USERNAME.gitlab.io</p>
+<p>Happy blogging.</p>
+</div>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul class="pager hidden-print">
+<li class="previous">
+                <a href="../how-to-use-git-amend-to-push-your-blog/" rel="prev" title="How to use git amend to push your blog?">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="../porting-space-invaders-clone-from-c%2B%2B-to-d/" rel="next" title="Porting Space Invaders clone from C++ to D">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><div>
+                <a href="https://github.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-github"></i>
+                </a>
+                <a href="https://gitlab.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-gitlab"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/zihegoh" target="blank">
+                    <i class="fab fa-lg fa-linkedin"></i>
+                </a>
+                <a href="/resume.pdf">
+                    <i class="far fa-lg fa-file-pdf"></i>
+                </a>
+                <a href="mailto:zihe.goh@gmail.com">
+                    <i class="fas fa-lg fa-envelope"></i>
+                </a>
+            </div>
+
+            <div>
+                <p>© 2021         <a href="mailto:zihe.goh@gmail.com">0xfe11</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            </div>
+            
+        </footer>
+</div>
+    
+            <script src="../../assets/js/baguetteBox.min.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>Setting up powerline on FreeBSD | 127.0.0.1</title>
+<link href="../../assets/css/baguetteBox.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/rst_base.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/code.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/theme.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<link href="../../assets/css/custom.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="https://0xfe11.github.io/posts/setting-up-powerline-on-freebsd/">
+<!--[if lt IE 9]><script src="../../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="0xfe11">
+<link rel="prev" href="../downloading-free-books-from-packt/" title="Downloading free books from Packt" type="text/html">
+<link rel="next" href="../today-i-learn-some-python-tips/" title="Today I learn some Python tips!" type="text/html">
+<meta property="og:site_name" content="127.0.0.1">
+<meta property="og:title" content="Setting up powerline on FreeBSD">
+<meta property="og:url" content="https://0xfe11.github.io/posts/setting-up-powerline-on-freebsd/">
+<meta property="og:description" content="Earlier in the week, I got my Windows machine with the Powerline prompt working and I thought it
+would be a fun exercise to get the same on my FreeBSD machine. After messing around for a few hours,
+I ">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2020-07-25T15:53:04+08:00">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+    <div id="container">
+         
+    <header id="header"><h1 id="brand"><a href="https://0xfe11.github.io/" title="127.0.0.1" rel="home">
+
+        <span id="blog-title">127.0.0.1</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../../pages/about/index.html">About</a></li>
+                <li><a href="../../index.html">Blog</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Setting up powerline on FreeBSD</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    0xfe11
+            </span></p>
+            <p class="dateline">
+            <a href="." rel="bookmark">
+            <time class="published dt-published" datetime="2020-07-25T15:53:04+08:00" itemprop="datePublished" title="25 Jul 2020">25 Jul 2020</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>Earlier in the week, I got my Windows machine with the Powerline prompt working and I thought it
+would be a fun exercise to get the same on my FreeBSD machine. After messing around for a few hours,
+I finally got it to work. Here are the steps that I took to set it up.</p>
+<div class="section" id="installation-of-packages">
+<h2>1. Installation of packages</h2>
+<p>Install the following packages as root,</p>
+<pre class="code sh"><a name="rest_code_ddb7d1e3f7cf416a97b535d270e09426-1"></a><span class="c1"># pkg install powerline-fonts</span>
+<a name="rest_code_ddb7d1e3f7cf416a97b535d270e09426-2"></a><span class="c1"># pkg install py37-powerline-status</span>
+</pre>
+<p>The powerline-fonts package contains patched fonts for special symbols that are not found in the
+regular fonts.</p>
+</div>
+<div class="section" id="start-powerline-at-start">
+<h2>2. Start powerline at start</h2>
+<p>Add the following line to your shell's rc file, for my case, I am using zsh and so I add the
+following line to my zshrc file.</p>
+<pre class="code sh"><a name="rest_code_d1aea6943bb042fe803a2bf13d7d572a-1"></a><span class="c1"># rc file</span>
+<a name="rest_code_d1aea6943bb042fe803a2bf13d7d572a-2"></a>. /usr/local/lib/python3.7/site-packages/powerline/bindings/zsh/powerline.zsh
+</pre>
+<p>This will invoke powerline when you open the terminal.</p>
+</div>
+<div class="section" id="getting-patched-font-to-use">
+<h2>3. Getting patched font to use</h2>
+<p>You might need to consult your manual related to the specific terminal you are using.
+Firstly, the get the name of the patched fonts to use, you can do the following command,</p>
+<pre class="code sh"><a name="rest_code_338ae558fcdd40fda78cda49c60d13dc-1"></a><span class="c1"># Get all fonts registered that are in powerline patched folders</span>
+<a name="rest_code_338ae558fcdd40fda78cda49c60d13dc-2"></a>$ fc-list <span class="p">|</span> grep powerline
+</pre>
+<p>I like the Hack-Regular patched font so I am going to go with that.</p>
+</div>
+<div class="section" id="set-up-your-terminal-to-use-patched-fonts">
+<h2>4. Set up your terminal to use patched fonts</h2>
+<p>Personally, I am using xterm so this is what I have added to my .Xresources.</p>
+<pre class="code sh"><a name="rest_code_a361cddce9144cb5bc5987589f2f2c92-1"></a><span class="c1"># .Xresources file</span>
+<a name="rest_code_a361cddce9144cb5bc5987589f2f2c92-2"></a>XTerm*faceName: Hack-Regular
+</pre>
+</div>
+<div class="section" id="use-unicode-for-your-freebsd">
+<h2>5. Use Unicode for your FreeBSD</h2>
+<p>Before I came upon this step, I was having issue with the fonts in my terminal. As it turned out,
+after this step, my terminal is showing the powerline fonts properly.</p>
+<p>If this file .login_conf do not exist on your home directory, have it created and add the
+following based on your locale.</p>
+<p>To check all of your available locale, you can do the following.</p>
+<pre class="code sh"><a name="rest_code_c111b26b603249c5ba83177fcefdc63e-1"></a>locale -a <span class="p">|</span> more
+</pre>
+<p>Make sure to pick something that have UTF-8 support, for my case I will be going with en_US.UTF-8.
+Set the lang accordingly to what you have picked.</p>
+<pre class="code text"><a name="rest_code_eaa6ab6de95b40339c6c0208acc5b89c-1"></a>me:\
+<a name="rest_code_eaa6ab6de95b40339c6c0208acc5b89c-2"></a> :charset=UTF-8:\
+<a name="rest_code_eaa6ab6de95b40339c6c0208acc5b89c-3"></a> :lang=en_US.UTF-8:
+</pre>
+</div>
+<div class="section" id="done">
+<h2>Done</h2>
+<p>Now save the file. You are ready to try the powerline. Make sure to logout and login back to try
+if the .login_conf is correctly loaded as well as your shell's rc file is loaded properly. Here is
+a screenshot of my powerline in my FreeBSD's xterm.</p>
+<img alt="/images/setting-up-powerline-on-freebsd_0.png" src="../../images/setting-up-powerline-on-freebsd_0.png">
+</div>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul class="pager hidden-print">
+<li class="previous">
+                <a href="../downloading-free-books-from-packt/" rel="prev" title="Downloading free books from Packt">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="../today-i-learn-some-python-tips/" rel="next" title="Today I learn some Python tips!">Next post</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><div>
+                <a href="https://github.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-github"></i>
+                </a>
+                <a href="https://gitlab.com/0xfe11" target="_blank">
+                    <i class="fab fa-lg fa-gitlab"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/zihegoh" target="blank">
+                    <i class="fab fa-lg fa-linkedin"></i>
+                </a>
+                <a href="/resume.pdf">
+                    <i class="far fa-lg fa-file-pdf"></i>
+                </a>
+                <a href="mailto:zihe.goh@gmail.com">
+                    <i class="fas fa-lg fa-envelope"></i>
+                </a>
+            </div>
+
+            <div>
+                <p>© 2021         <a href="mailto:zihe.goh@gmail.com">0xfe11</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         </p>
+            </div>
+            
+        </footer>
+</div>
+    
+            <script src="../../assets/js/baguetteBox.min.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
+</body>
+</html>
